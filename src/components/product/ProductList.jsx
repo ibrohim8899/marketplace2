@@ -4,11 +4,12 @@ import { useInView } from 'react-intersection-observer';
 import ProductCard from './ProductCard';
 import useInfiniteProducts from '../../hooks/useInfiniteProducts';
 
-export default function ProductList({ category, searchQuery, priceRange }) {
+export default function ProductList({ category, searchQuery, priceRange, locationFilter }) {
   const { products, loading, hasMore, loadMore, error } = useInfiniteProducts({ 
     category, 
     searchQuery, 
-    priceRange 
+    priceRange,
+    locationFilter,
   });
 
   const { ref, inView } = useInView({

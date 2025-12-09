@@ -6,234 +6,241 @@ import {
   MapPin,
   Globe,
   Calendar,
-  Star,
-  MessageCircle,
-  Briefcase,
-  Languages,
+  ShieldCheck,
+  User,
   LogOut,
   LogIn,
+  Loader2,
 } from "lucide-react";
+import axiosInstance from "../api/axiosInstance";
+
+const formatDate = (value) => {
+  if (!value) return "Ma'lumot yo'q";
+  try {
+    return new Date(value).toLocaleString("uz-UZ", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return value;
+  }
+};
 
 export default function ProfileCard() {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState({
-    firstName: "Ibrahim",
-    lastName: "Xolmirzaev",
-    rating: 4.8,
-    reviews: 127,
-    bio: "Men 5 yildan beri onlayn savdo va freelancing bilan shug'ullanaman. Raqamli marketing, SMM, veb-sayt yaratish va elektron tijorat bo'yicha mutaxassisman.",
-    email: "ibrahim@example.com",
-    phone: "+998 90 123-45-67",
-    location: "Toshkent, O'zbekiston",
-    website: "ibrahim.uz",
-    joined: "Yanvar 2021",
-    languages: ["O'zbek", "Русский", "English"],
-  });
+  const [profile, setProfile] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [hasToken, setHasToken] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
-    const raw = localStorage.getItem("user_profile");
-
-    if (token && raw) {
-      setIsLoggedIn(true);
-      try {
-        const parsed = JSON.parse(raw);
-
-        setUser((prev) => ({
-          ...prev,
-          firstName:
-            parsed.first_name ||
-            parsed.firstName ||
-            prev.firstName,
-          lastName:
-            parsed.last_name ||
-            parsed.lastName ||
-            prev.lastName,
-          email: parsed.email || prev.email,
-          phone:
-            parsed.phone ||
-            parsed.phone_number ||
-            parsed.phoneNumber ||
-            prev.phone,
-          location:
-            parsed.location ||
-            parsed.address ||
-            prev.location,
-          website:
-            parsed.website ||
-            parsed.site ||
-            prev.website,
-          joined:
-            parsed.joined ||
-            parsed.date_joined ||
-            parsed.created_at ||
-            prev.joined,
-          languages:
-            Array.isArray(parsed.languages) && parsed.languages.length > 0
-              ? parsed.languages
-              : prev.languages,
-        }));
-      } catch (err) {
-        console.error("Profil ma'lumotlarini o'qishda xatolik:", err);
-      }
-    } else {
-      setIsLoggedIn(false);
+    if (!token) {
+      setHasToken(false);
+      setError("Profil ma'lumotlarini ko'rish uchun tizimga kiring.");
+      setLoading(false);
+      return;
     }
+
+    setHasToken(true);
+    const fetchProfile = async () => {
+      try {
+        const { data } = await axiosInstance.get("/user/profile/");
+        setProfile(data);
+      } catch (err) {
+        console.error("Profilni yuklashda xatolik:", err.response?.data || err.message);
+        const detail = err.response?.data?.detail || "Profilni yuklab bo'lmadi.";
+        setError(detail);
+        if (err.response?.status === 401) {
+          setHasToken(false);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user_profile");
-    setIsLoggedIn(false);
-    navigate("/");
+    setProfile(null);
+    setHasToken(false);
   };
 
   const handleLogin = () => {
-    // Login sahifasiga o'tish
-    navigate('/login');
+    navigate("/login");
   };
 
+  const renderEmptyState = () => (
+    <div className="bg-white rounded-3xl shadow-xl p-8 text-center space-y-5">
+      <div className="mx-auto w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+        <User className="w-8 h-8" />
+      </div>
+      <div>
+        <h2 className="text-xl font-semibold text-gray-900">Profil ma'lumotlari mavjud emas</h2>
+        <p className="text-gray-500 text-sm mt-2">
+          {error || "Ilova imkoniyatlaridan foydalanish uchun tizimga kiring."}
+        </p>
+      </div>
+      <button
+        onClick={handleLogin}
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-2xl transition-all flex items-center justify-center gap-2"
+      >
+        <LogIn className="w-5 h-5" />
+        Kirish sahifasiga o'tish
+      </button>
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3 text-indigo-600">
+          <Loader2 className="w-10 h-10 animate-spin" />
+          <p className="text-sm font-medium">Profil ma'lumotlari yuklanmoqda...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!hasToken || !profile) {
+    return (
+      <div className="min-h-screen bg-gray-50 px-4 py-16">
+        <div className="max-w-xl mx-auto">{renderEmptyState()}</div>
+      </div>
+    );
+  }
+
+  const initials = profile.name
+    ? profile.name
+        .split(" ")
+        .map((word) => word[0])
+        .slice(0, 2)
+        .join("")
+        .toUpperCase()
+    : profile.email?.[0]?.toUpperCase() || "U";
+
+  const infoItems = [
+    { label: "Email", value: profile.email, icon: Mail, accent: "text-indigo-600" },
+    { label: "Telefon", value: profile.phone_number || "Ma'lumot yo'q", icon: Phone, accent: "text-emerald-600" },
+    { label: "Foydalanuvchi nomi", value: profile.username || "Ma'lumot yo'q", icon: User, accent: "text-slate-600" },
+    { label: "Role", value: profile.role || "Aniqlanmagan", icon: ShieldCheck, accent: "text-purple-600" },
+  ];
+
   return (
-    <div className="inset-0 flex flex-col">
-      
-      {/* Asosiy kontent – scroll yo'q */}
-      <div className="flex-1 overflow-hidden px-4 py-20">
-        <div className="w-full max-w-md mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:py-12 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+          <div className="bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-6 py-8 sm:px-8 sm:py-10 text-white">
+            <div className="flex flex-col md:flex-row md:items-center gap-6">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white/20 border border-white/30 backdrop-blur flex items-center justify-center text-2xl sm:text-3xl font-bold">
+                {initials}
+              </div>
 
-            {/* YONMA-YON HEADER: Avatar + Ism + Reyting */}
-            <div className="px-6 pt-8 pb-6 bg-gradient-to-br from-indigo-50 to-purple-50">
-              <div className="flex items-center gap-5">
-                {/* Avatar */}
-                <div className="flex-shrink-0">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold shadow-xl border-4 border-white">
-                    IX
-                  </div>
+              <div className="flex-1 space-y-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white">{profile.name || "Ism ko'rsatilmagan"}</h1>
+                  {profile.role && (
+                    <span className="px-3 py-1 rounded-full bg-white/15 text-sm font-semibold">
+                      {profile.role.toUpperCase()}
+                    </span>
+                  )}
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      profile.is_active
+                        ? "bg-emerald-500/20 text-emerald-100"
+                        : "bg-rose-500/20 text-rose-100"
+                    }`}
+                  >
+                    {profile.is_active ? "Faol foydalanuvchi" : "Nofaol"}
+                  </span>
                 </div>
-
-                {/* Ism, kasb, reyting */}
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-xl font-bold text-gray-900 truncate">
-                    {user.firstName} {user.lastName}
-                  </h2>
-                  <p className="text-indigo-600 font-medium flex items-center gap-1.5 mt-1 text-sm">
-                    <Briefcase className="w-4 h-4" />
-                    Freelancer & Onlayn Sotuvchi
-                  </p>
-
-                  {/* Reyting */}
-                  <div className="flex items-center gap-2 mt-2">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${i < user.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
-                        />
-                      ))}
-                    </div>
-                    <span className="font-bold text-gray-800">{user.rating}</span>
-                    <span className="text-gray-500 text-xs">({user.reviews} sharh)</span>
-                  </div>
-                </div>
+                <p className="text-white/80 text-sm">
+                  Oxirgi faoliyat: {formatDate(profile.last_login_at)}
+                </p>
               </div>
             </div>
+          </div>
 
-            {/* Bio */}
-            <div className="px-6 py-5">
-              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-4 border border-indigo-100">
-                <p className="text-gray-700 text-xs leading-tight">
-                  {user.bio}
+          <div className="px-6 py-8 sm:px-8 sm:py-10 space-y-8">
+            <div className="grid gap-4 md:grid-cols-2">
+              {infoItems.map(({ label, value, icon: Icon, accent }) => (
+                <div key={label} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                  <p className="text-xs uppercase tracking-wide text-gray-500 flex items-center gap-2">
+                    <Icon className={`w-4 h-4 ${accent}`} />
+                    {label}
+                  </p>
+                  <p className="mt-2 text-base font-semibold text-gray-900 break-words">
+                    {value || "Ma'lumot yo'q"}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-2xl border border-gray-100 p-4 sm:p-5 bg-white">
+                <p className="text-xs uppercase tracking-wide text-gray-500">Ro'yxatdan o'tgan vaqt</p>
+                <p className="mt-2 text-base sm:text-lg font-semibold text-gray-900">{formatDate(profile.created_at)}</p>
+              </div>
+              <div className="rounded-2xl border border-gray-100 p-4 sm:p-5 bg-white">
+                <p className="text-xs uppercase tracking-wide text-gray-500">Telegram ID</p>
+                <p className="mt-2 text-base sm:text-lg font-semibold text-gray-900">
+                  {profile.telegram_id || "Ma'lumot yo'q"}
                 </p>
               </div>
             </div>
 
-            {/* Kontaktlar – 2 ustun */}
-            <div className="px-6 pb-4">
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="flex gap-2.5 bg-gray-50 rounded-xl p-3 items-start">
-                  <Mail className="w-4 h-4 text-indigo-600 mt-0.5" />
-                  <div>
-                    <p className="text-gray-500">Email</p>
-                    <p className="font-medium text-gray-800 break-all">{user.email}</p>
-                  </div>
-                </div>
-                <div className="flex gap-2.5 bg-gray-50 rounded-xl p-3 items-start">
-                  <Phone className="w-4 h-4 text-green-600 mt-0.5" />
-                  <div>
-                    <p className="text-gray-500">Telefon</p>
-                    <p className="font-medium text-gray-800">{user.phone}</p>
-                  </div>
-                </div>
-                <div className="flex gap-2.5 bg-gray-50 rounded-xl p-3 items-start">
-                  <MapPin className="w-4 h-4 text-red-600 mt-0.5" />
-                  <div>
-                    <p className="text-gray-500">Manzil</p>
-                    <p className="font-medium text-gray-800">{user.location}</p>
-                  </div>
-                </div>
-                <div className="flex gap-2.5 bg-gray-50 rounded-xl p-3 items-start">
-                  <Globe className="w-4 h-4 text-purple-600 mt-0.5" />
-                  <div>
-                    <p className="text-gray-500">Veb-sayt</p>
-                    <a href={`https://${user.website}`} className="font-medium text-indigo-600 underline">
-                      {user.website}
-                    </a>
-                  </div>
+            {profile.location || profile.address || profile.website ? (
+              <div className="rounded-3xl border border-dashed border-indigo-100 bg-indigo-50/60 p-5 sm:p-6">
+                <h3 className="text-sm font-semibold text-indigo-900 mb-4">Qo'shimcha ma'lumotlar</h3>
+                <div className="space-y-3 text-sm text-indigo-900/90">
+                  {profile.location && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      <span>{profile.location}</span>
+                    </div>
+                  )}
+                  {profile.address && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4" />
+                      <span>{profile.address}</span>
+                    </div>
+                  )}
+                  {profile.website && (
+                    <div className="flex items-center gap-2">
+                      <Globe className="w-4 h-4" />
+                      <a
+                        href={profile.website.startsWith("http") ? profile.website : `https://${profile.website}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline"
+                      >
+                        {profile.website}
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
-
-              <div className="mt-3 flex items-center gap-2.5 bg-gray-50 rounded-xl p-3 text-xs">
-                <Calendar className="w-4 h-4 text-orange-600" />
-                <div>
-                  <p className="text-gray-500">A’zo bo’lgan</p>
-                  <p className="font-medium text-gray-800">{user.joined}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Tillar */}
-            <div className="px-6 pb-6">
-              <div className="flex items-center gap-2 mb-3">
-                <Languages className="w-4 h-4 text-gray-600" />
-                <span className="text-sm font-medium text-gray-700">Gaplashadigan tillar</span>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {user.languages.map((lang) => (
-                  <span key={lang} className="px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
-                    {lang}
-                  </span>
-                ))}
-              </div>
-            </div>
+            ) : null}
           </div>
         </div>
-      </div>
 
-      {/* Login/Logout tugmalari */}
-      <div className="bottom-20 left-0 right-0 px-6 z-50">
-        {isLoggedIn ? (
+        <div className="flex">
           <button
             onClick={handleLogout}
-            className="w-full max-w-md mx-auto bg-gradient-to-r from-red-600 to-red-700 text-white font-bold py-3 rounded-2xl shadow-xl flex items-center justify-center gap-2.5 text-sm hover:scale-105 transition-all"
+            className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-3 rounded-2xl shadow-lg flex items-center justify-center gap-2 hover:shadow-rose-500/40 transition-all"
           >
             <LogOut className="w-5 h-5" />
             Chiqish
           </button>
-        ) : (
-          <button
-            onClick={handleLogin}
-            className="w-full max-w-md mx-auto bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-3 rounded-2xl shadow-xl flex items-center justify-center gap-2.5 text-sm hover:scale-105 transition-all"
-          >
-            <LogIn className="w-5 h-5" />
-            Kirish
-          </button>
-        )}
+        </div>
       </div>
-
-      {/* Pastki nav bar joyi */}
-      <div className="h-20 flex-shrink-0" />
     </div>
   );
 }

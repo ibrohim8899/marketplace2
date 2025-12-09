@@ -4,6 +4,11 @@ import axiosInstance from "./axiosInstance";
 // Mahsulot uchun commentlarni olish
 export const getComments = async (productUid) => {
   try {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      return [];
+    }
+
     // Swagger bo'yicha faqat bitta GET endpoint bor: /comment/my/
     // U foydalanuvchining barcha sharhlarini qaytaradi, biz mahsulot bo'yicha filtrlab olamiz
     const response = await axiosInstance.get("/comment/my/");
@@ -12,12 +17,19 @@ export const getComments = async (productUid) => {
       ? response.data
       : response.data.results || [];
 
-    const filtered = allComments.filter((c) =>
-      c.product_uid === productUid ||
-      c.product?.uid === productUid ||
-      c.product_id === productUid ||
-      c.product === productUid
-    );
+    // Mahsulotga mos kommentlarni filterlaymiz
+    const filtered = allComments.filter((c) => {
+      // Product UID bilan solishtirish
+      if (c.product_uid === productUid) return true;
+      if (c.product?.uid === productUid) return true;
+      if (c.product_id === productUid) return true;
+      if (c.product === productUid) return true;
+      
+      // Agar product obyekt bo'lsa va uning uid si bor
+      if (typeof c.product === 'object' && c.product?.uid === productUid) return true;
+      
+      return false;
+    });
 
     return filtered;
   } catch (error) {
@@ -66,10 +78,11 @@ export const deleteComment = async (commentId) => {
 // Commentni yangilash
 export const updateComment = async (commentId, text, rating) => {
   try {
-    const response = await axiosInstance.put(`/comment/${commentId}/update/`, {
-      text,
+    const payload = {
+      body: text,
       rating,
-    });
+    };
+    const response = await axiosInstance.put(`/comment/${commentId}/update/`, payload);
     return response.data;
   } catch (error) {
     console.error("Commentni yangilashda xatolik:", error);

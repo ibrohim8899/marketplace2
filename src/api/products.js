@@ -102,24 +102,39 @@ export const searchProducts = async (query, options = {}) => {
   return normalizeProductList(res.data);
 };
 
-// BITTA MAHSULOTNI UID BO‘YICHA OLISH – 100% ISHLAYDI!
+export const getMyProducts = async () => {
+  const res = await axiosInstance.get("/product/my-products/");
+  return normalizeProductList(res.data);
+};
+
+export const createProduct = async (body) => {
+  const res = await axiosInstance.post("/product/products/create/", body);
+  cachedProducts = null;
+  return res.data;
+};
+
 export const getProductByUid = async (uid) => {
   if (!uid || uid === "undefined") {
     throw new Error("UID yo'q");
   }
 
-  console.log("Izlanayotgan UID:", uid);
+  const res = await axiosInstance.get(`/product/products/${uid}/`);
+  return res.data;
+};
 
-  const all = await getAllProducts();
-  const list = Array.isArray(all) ? all : normalizeProductList(all);
-  const product = list.find(p => p.uid === uid);
+export const deleteProduct = async (uid) => {
+  await axiosInstance.delete(`/product/products/${uid}/delete/`);
+  cachedProducts = null;
+};
 
-  if (product) {
-    console.log("MAHSULOT TOPILDI:", product.name || product.title);
-    return product;
-  } else {
-    console.warn("BU UID BAZADA YO'Q:", uid);
-    console.log("Mavjud UID lar:", list.map(p => p.uid).slice(0, 10));
-    throw new Error("Mahsulot topilmadi");
-  }
+export const updateProduct = async (uid, body) => {
+  const res = await axiosInstance.put(`/product/products/${uid}/update/`, body);
+  cachedProducts = null;
+  return res.data;
+};
+
+export const partialUpdateProduct = async (uid, body) => {
+  const res = await axiosInstance.patch(`/product/products/${uid}/update/`, body);
+  cachedProducts = null;
+  return res.data;
 };

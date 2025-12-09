@@ -3,9 +3,6 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: "/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
   withCredentials: true, // Cookie va CSRF uchun
 });
 
@@ -15,6 +12,14 @@ axiosInstance.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+
+  const isFormData = config.data instanceof FormData;
+  if (isFormData) {
+    delete config.headers["Content-Type"];
+  } else if (!config.headers["Content-Type"]) {
+    config.headers["Content-Type"] = "application/json";
+  }
+
   return config;
 });
 

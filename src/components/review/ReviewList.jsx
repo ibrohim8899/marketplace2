@@ -38,20 +38,17 @@ export default function ReviewList({ productId, onCommentDeleted }) {
         <p className="text-center text-gray-500 py-8">Hali sharhlar yo'q</p>
       ) : (
         comments.map((comment) => (
-          <div key={comment.id} className="border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
+          <div key={comment.uid || comment.id} className="border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
             {/* Commenter ma'lumotlari */}
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                  {comment.user?.first_name?.charAt(0) || comment.user?.email?.charAt(0) || 'U'}
+                  {comment.owner_name?.charAt(0) || comment.user?.first_name?.charAt(0) || comment.user?.email?.charAt(0) || 'U'}
                 </div>
                 <div>
-                  <Link
-                    to={`/profile/${comment.user?.id}`}
-                    className="font-semibold text-gray-800 hover:text-blue-600 transition-colors"
-                  >
-                    {comment.user?.first_name} {comment.user?.last_name || comment.user?.email || 'Noma\'lum'}
-                  </Link>
+                  <div className="font-semibold text-gray-800">
+                    {comment.owner_name || `${comment.user?.first_name} ${comment.user?.last_name || comment.user?.email}` || 'Noma\'lum'}
+                  </div>
                   <p className="text-xs text-gray-500">
                     {new Date(comment.created_at).toLocaleDateString('uz-UZ')}
                   </p>

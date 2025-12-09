@@ -12,72 +12,253 @@
 //     setShowModal(false);
 //     // Real backendga jo'natish
 //   };
-
-//   return (
-//     <div className="pt-16 pb-20 p-4">
-//       <h1 className="text-2xl font-bold mb-6">Sotuvchi Paneli</h1>
-//       <Button onClick={() => setShowModal(true)} className="mb-6 w-full">Yangi tovar qo'shish</Button>
-//       {/* Sotilgan tovarlar ro'yxati va boshqalar */}
-//       <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
-//         <h2 className="text-xl font-bold mb-4">Yangi Tovar</h2>
-//         <AddProductForm onSubmit={handleAddProduct} />
-//       </Modal>
-//     </div>
-//   );
-// }
-
 // src/components/seller/SellerDashboard.jsx
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+
+import { Link } from 'react-router-dom';
 import { Upload, Package, DollarSign, MapPin, Tag, User, FileText, CheckCircle } from 'lucide-react';
+import { getCategories } from '../../api/categories';
+import { createProduct, getMyProducts, deleteProduct } from '../../api/products';
+import axiosInstance from '../../api/axiosInstance';
 
 export default function SellerDashboard() {
+  const generateUid = () => {
+    if (window?.crypto?.randomUUID) {
+      return window.crypto.randomUUID();
+    }
+    return `${Date.now()}-${Math.random().toString(16).slice(2, 10)}`;
+  };
+
   const [form, setForm] = useState({
-    uid: '',
+    uid: generateUid(),
     name: '',
     cost: '',
     amount: 1,
-    owner: '',
     category: '',
     description: '',
     location: '',
-    status: 'PENDING',
+    status: 'pending',
   });
 
-  const [photos, setPhotos] = useState([null, null, null, null, null]);
+  const [photos, setPhotos] = useState([null, null, null, null, null]); // { file, preview }
+
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [categoriesError, setCategoriesError] = useState(null);
+  const [myProducts, setMyProducts] = useState([]);
+  const [myProductsLoading, setMyProductsLoading] = useState(false);
+  const [myProductsError, setMyProductsError] = useState(null);
+  const [formError, setFormError] = useState(null);
 
-  const categories = [
-    { id: 1, name: 'Smartfonlar' },
-    { id: 2, name: 'Noutbuklar' },
-    { id: 3, name: 'Kiyim-kechak' },
-  ];
+  const [ownerInfo, setOwnerInfo] = useState(null);
+  const [ownerLoading, setOwnerLoading] = useState(false);
+  const [ownerError, setOwnerError] = useState(null);
 
-  const owners = [
-    { id: 1, name: 'Ali Valiyev' },
-    { id: 2, name: 'Olimjon Karimov' },
-  ];
+  const isLoggedIn = !!localStorage.getItem('access_token');
 
-  const handlePhoto = (index, e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const newPhotos = [...photos];
-        newPhotos[index] = reader.result;
-        setPhotos(newPhotos);
-      };
-      reader.readAsDataURL(file);
+  const loadMyProducts = async () => {
+    if (!isLoggedIn) return;
+    try {
+      setMyProductsLoading(true);
+      setMyProductsError(null);
+      const data = await getMyProducts();
+      const list = Array.isArray(data) ? data : data?.results || data || [];
+      setMyProducts(list);
+    } catch (err) {
+      console.error('My products yuklanmadi:', err);
+      setMyProductsError("Mahsulotlaringiz yuklanmadi");
+    } finally {
+      setMyProductsLoading(false);
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      alert('Mahsulot muvaffaqiyatli qo\'shildi!');
-      setLoading(false);
-    }, 1500);
+  useEffect(() => {
+    if (!isLoggedIn) return;
+
+    setCategoriesLoading(true);
+    setCategoriesError(null);
+
+    const fetchOwner = async () => {
+      try {
+        setOwnerLoading(true);
+        setOwnerError(null);
+        const { data } = await axiosInstance.get('/user/profile/');
+        setOwnerInfo(data);
+      } catch (err) {
+        console.error('Profil ma\'lumotlari olinmadi:', err);
+        setOwnerError("Profil ma'lumotlarini olishda xatolik");
+      } finally {
+        setOwnerLoading(false);
+      }
+    };
+
+    fetchOwner();
+
+    getCategories()
+      .then((data) => {
+        const cats = data.results || data;
+        setCategories(cats);
+      })
+      .catch((err) => {
+        console.error('Kategoriyalar yuklanmadi:', err);
+        setCategoriesError('Kategoriyalar yuklanmadi');
+      })
+      .finally(() => {
+        setCategoriesLoading(false);
+      });
+
+    loadMyProducts();
+  }, [isLoggedIn]);
+
+  const handlePhoto = (index, e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const preview = URL.createObjectURL(file);
+    setPhotos((prev) => {
+      const next = [...prev];
+      if (next[index]?.preview) {
+        URL.revokeObjectURL(next[index].preview);
+      }
+      next[index] = { file, preview };
+      return next;
+    });
   };
+
+  const resetPhotos = () => {
+    photos.forEach((photo) => {
+      if (photo?.preview) {
+        URL.revokeObjectURL(photo.preview);
+      }
+    });
+    setPhotos([null, null, null, null, null]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!isLoggedIn) {
+      alert("Mahsulot joylash uchun avval tizimga kiring.");
+      return;
+    }
+
+    if (!form.category) {
+      setFormError("Iltimos, kategoriya tanlang.");
+      return;
+    }
+
+    if (!ownerInfo?.uid && !ownerInfo?.id) {
+      setFormError("Profil ma'lumotlari topilmadi. Sahifani yangilang.");
+      return;
+    }
+
+    setLoading(true);
+    setFormError(null);
+
+    try {
+      const formData = new FormData();
+      if (form.uid) formData.append("uid", form.uid);
+      formData.append("name", form.name);
+      formData.append("cost", String(form.cost));
+      formData.append("amount", String(form.amount));
+
+      const ownerUid = ownerInfo?.uid || ownerInfo?.id;
+      if (!ownerUid) {
+        throw new Error("Profil ma'lumotlari topilmadi. Ilova qayta ishga tushiring.");
+      }
+      formData.append("owner", ownerUid);
+
+      formData.append("category", form.category);
+      formData.append("description", form.description);
+      formData.append("location", form.location);
+      formData.append("status", form.status);
+
+      photos.forEach((photo, index) => {
+        if (photo?.file) {
+          formData.append(`photo${index + 1}`, photo.file);
+        }
+      });
+
+      await createProduct(formData);
+
+      alert("Mahsulot muvaffaqiyatli qo'shildi!");
+
+      setForm({
+        uid: generateUid(),
+        name: '',
+        cost: '',
+        amount: 1,
+        category: '',
+        description: '',
+        location: '',
+        status: 'pending',
+      });
+      resetPhotos();
+
+      await loadMyProducts();
+    } catch (err) {
+      console.error('Mahsulot yaratishda xato:', err.response?.data || err.message);
+      const detail = err.response?.data || err.message;
+      if (typeof detail === 'string') {
+        setFormError(detail);
+      } else if (Array.isArray(detail)) {
+        setFormError(detail.join(' \n'));
+      } else if (detail && typeof detail === 'object') {
+        const message = Object.entries(detail)
+          .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+          .join('\n');
+        setFormError(message || 'Mahsulot yaratilmadi');
+      } else {
+        setFormError('Mahsulot yaratilmadi');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const uidDisplay = useMemo(() => form.uid.slice(0, 8) + '…' + form.uid.slice(-4), [form.uid]);
+
+  const handleDelete = async (uid) => {
+    if (!uid) return;
+    const confirmed = window.confirm("Rostdan ham bu mahsulotni o'chirmoqchimisiz?");
+    if (!confirmed) return;
+
+    try {
+      await deleteProduct(uid);
+      await loadMyProducts();
+    } catch (err) {
+      console.error("Mahsulot o'chirish xatosi:", err);
+      alert("Mahsulot o'chirilmadi");
+    }
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen from-blue-50 via-white to-purple-50 pt-16 pb-24 px-4 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 space-y-5 text-center">
+          <h1 className="text-2xl font-bold text-gray-900">Mahsulot joylash uchun tizimga kiring</h1>
+          <p className="text-sm text-gray-600">
+            Bu bo'lim faqat tizimga kirgan foydalanuvchilar uchun. Iltimos, avval akkauntingizga kiring.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 mt-4">
+            <Link
+              to="/login"
+              className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors"
+            >
+              Tizimga kirish
+            </Link>
+            <Link
+              to="/"
+              className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              Bosh sahifa
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen from-blue-50 via-white to-purple-50 pt-16 pb-24 px-4">
@@ -88,22 +269,33 @@ export default function SellerDashboard() {
           <p className="text-gray-600">Barcha maydonlarni to'ldiring va e'lon bering</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-xl p-8 md:p-10 space-y-8">
+        <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10 space-y-8">
+          {formError && (
+            <div className="mb-2 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+              {formError}
+            </div>
+          )}
+
           {/* 1-qator: UID + Name */}
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid lg:grid-cols-2 gap-6">
             <div>
               <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-2">
                 <Package className="w-4 h-4 text-blue-600" />
                 UID <span className="text-red-500">*</span>
               </label>
-              <input
-                type="text"
-                value={form.uid}
-                onChange={(e) => setForm({ ...form, uid: e.target.value })}
-                placeholder="aaadbb80-8c90-4a98-b4a2-c498e62f79a7"
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                required
-              />
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1 px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-800 text-sm truncate">
+                  {uidDisplay}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setForm((prev) => ({ ...prev, uid: generateUid() }))}
+                  className="px-4 py-3 rounded-xl bg-blue-50 text-blue-600 text-sm font-semibold hover:bg-blue-100 transition-colors"
+                >
+                  UID yangilash
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">Har bir mahsulot uchun noyob UID avtomatik yaratiladi.</p>
             </div>
 
             <div>
@@ -162,19 +354,13 @@ export default function SellerDashboard() {
                 <User className="w-4 h-4 text-indigo-600" />
                 Ega <span className="text-red-500">*</span>
               </label>
-              <select
-                value={form.owner}
-                onChange={(e) => setForm({ ...form, owner: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                required
-              >
-                <option value="">Tanlang</option>
-                {owners.map((o) => (
-                  <option key={o.id} value={o.id}>
-                    {o.name}
-                  </option>
-                ))}
-              </select>
+              <div className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 text-gray-800 text-sm">
+                {ownerLoading
+                  ? 'Profil ma\'lumotlari yuklanmoqda...'
+                  : ownerError
+                  ? ownerError
+                  : ownerInfo?.name || ownerInfo?.username || ownerInfo?.email || "Ma'lumot yo'q"}
+              </div>
             </div>
 
             <div>
@@ -186,11 +372,16 @@ export default function SellerDashboard() {
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                required
               >
                 <option value="">Tanlang</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>
+                {categoriesLoading && (
+                  <option disabled>Yuklanmoqda...</option>
+                )}
+                {!categoriesLoading && categoriesError && (
+                  <option disabled>{categoriesError}</option>
+                )}
+                {!categoriesLoading && !categoriesError && categories.map((c) => (
+                  <option key={c.uid} value={c.uid}>
                     {c.name}
                   </option>
                 ))}
@@ -241,13 +432,12 @@ export default function SellerDashboard() {
               onChange={(e) => setForm({ ...form, status: e.target.value })}
               className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             >
-              <option value="PENDING">Kutilmoqda</option>
-              <option value="APPROVED">Tasdiqlangan</option>
-              <option value="REJECTED">Rad etilgan</option>
+              <option value="pending">Kutilmoqda</option>
+              <option value="active">Faol</option>
+              <option value="sold_out">Sotuv tugagan</option>
             </select>
           </div>
 
-          {/* Rasmlar */}
           <div>
             <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 mb-3">
               <Upload className="w-4 h-4 text-purple-600" />
@@ -264,9 +454,9 @@ export default function SellerDashboard() {
                       className="hidden"
                     />
                     <div className="aspect-square border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center hover:border-blue-500 transition-all bg-gray-50 group-hover:bg-blue-50">
-                      {photos[index] ? (
+                      {photos[index]?.preview ? (
                         <img
-                          src={photos[index]}
+                          src={photos[index].preview}
                           alt={`Photo ${index + 1}`}
                           className="w-full h-full object-cover rounded-2xl"
                         />
@@ -302,6 +492,48 @@ export default function SellerDashboard() {
             )}
           </button>
         </form>
+
+        <div className="mt-12 bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-gray-100">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-800">Mening mahsulotlarim</h2>
+          </div>
+
+          {myProductsLoading ? (
+            <div className="py-6 text-center text-gray-500 text-sm">Mahsulotlaringiz yuklanmoqda...</div>
+          ) : myProductsError ? (
+            <div className="py-6 text-center text-red-500 text-sm">{myProductsError}</div>
+          ) : myProducts.length === 0 ? (
+            <div className="py-6 text-center text-gray-500 text-sm">Hozircha sizda joylashtirilgan mahsulotlar yo'q.</div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2">
+              {myProducts.map((p) => (
+                <div
+                  key={p.uid || p.id}
+                  className="border border-gray-100 rounded-2xl p-4 flex items-start justify-between bg-gray-50/60 hover:bg-white hover:shadow-md transition-all"
+                >
+                  <div className="pr-3">
+                    <h3 className="text-sm font-semibold text-gray-900 line-clamp-1">
+                      {p.name || p.title || 'Nomsiz mahsulot'}
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-700">
+                      {(p.cost || p.price || 0).toLocaleString()} so'm
+                    </p>
+                    <p className="mt-1 text-xs text-gray-400">
+                      Holati: {p.status || 'Noma’lum'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(p.uid || p.id)}
+                    className="text-xs font-semibold text-red-500 hover:text-red-600 px-3 py-1.5 rounded-full bg-red-50 hover:bg-red-100 transition-colors"
+                  >
+                    O'chirish
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
