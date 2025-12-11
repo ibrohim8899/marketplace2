@@ -2,12 +2,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../api/auth";
+import { useNotification } from "../context/NotificationContext";
 
 export default function TestLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -15,7 +17,11 @@ export default function TestLogin() {
     try {
       const success = await loginUser(email, password);
       if (success) {
-        alert("Muvaffaqiyatli kirildi! Endi savatcha ishlaydi.");
+        showNotification({
+          type: "success",
+          title: "Muvaffaqiyatli kirildi",
+          message: "Endi savatcha va boshqa funksiyalar to'liq ishlaydi.",
+        });
         navigate("/"); // Bosh sahifaga yo'naltiramiz
         window.location.reload(); // Tokenni axios ilib olishi uchun sahifani yangilaymiz
       } else {

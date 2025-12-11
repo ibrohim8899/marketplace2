@@ -54,7 +54,7 @@ export const filterProductsByCost = async ({ min, max, search, limit, offset } =
     return await getAllProducts();
   }
 
-  const res = await axiosInstance.get("/filters/products/filter/cost/", {
+  const res = await axiosInstance.get("/filters/products/filter/price/", {
     params: {
       min,
       max,

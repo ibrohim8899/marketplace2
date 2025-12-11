@@ -4,9 +4,6 @@
 // const CartContext = createContext();
 
 // export function CartProvider({ children }) {
-//   const [cart, setCart] = useState([]);
-//   const [wishlist, setWishlist] = useState([]);
-
 //   // Xavfsiz o‘qish funksiyasi
 //   const safeParse = (item, fallback = []) => {
 //     if (!item) return fallback;
@@ -135,6 +132,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { getCartItems, addToCartApi, removeFromCartApi } from '../api/cart';
+import { useNotification } from './NotificationContext';
 
 const CartContext = createContext();
 
@@ -156,6 +154,8 @@ export function CartProvider({ children }) {
 
   // --- WISHLIST LOGIKASI (LOCAL STORAGE) ---
   // Refreshda localStorage dan yuklash
+  const { showNotification } = useNotification();
+
   const [wishlist, setWishlist] = useState(() => {
     const saved = localStorage.getItem('wishlist_v2');
     return safeParse(saved);
@@ -198,7 +198,11 @@ export function CartProvider({ children }) {
       await addToCartApi(product);
       await fetchCart();
     } catch (error) {
-      alert("Xatolik: Tizimga kiring yoki internetni tekshiring.");
+      showNotification({
+        type: 'error',
+        title: 'Savatchaga qo\'shib bo\'lmadi',
+        message: "Tizimga kiring yoki internet aloqasini tekshiring.",
+      });
     }
   };
 

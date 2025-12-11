@@ -8,6 +8,7 @@ export default function SearchResults() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get('q') || '';
+  const categoryFilter = params.get('category') || '';
   const min = params.get('min');
   const max = params.get('max');
   const locationFilter = params.get('location') || '';
@@ -62,6 +63,7 @@ export default function SearchResults() {
           {/* mavjud filter komponenti */}
           <SearchFilter
             initialQuery={searchQuery}
+            initialCategory={categoryFilter}
             initialMin={min || ''}
             initialMax={max || ''}
             initialLocation={locationFilter}
@@ -70,7 +72,7 @@ export default function SearchResults() {
 
         {/* Natijalar ro'yxati */}
         <div className="bg-white/80 rounded-2xl border border-slate-200 shadow-sm px-3 sm:px-5 py-4 sm:py-6">
-          <ProductList searchQuery={searchQuery} priceRange={priceRange} locationFilter={locationFilter} />
+          <ProductList searchQuery={searchQuery} categoryFilter={categoryFilter} priceRange={priceRange} locationFilter={locationFilter} />
         </div>
 
       </Container>

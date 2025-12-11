@@ -139,9 +139,9 @@ export default function ProfileCard() {
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           <div className="bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-6 py-8 sm:px-8 sm:py-10 text-white">
             <div className="flex flex-col md:flex-row md:items-center gap-6">
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white/20 border border-white/30 backdrop-blur flex items-center justify-center text-2xl sm:text-3xl font-bold">
+              {/* <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white/20 border border-white/30 backdrop-blur flex items-center justify-center text-2xl sm:text-3xl font-bold">
                 {initials}
-              </div>
+              </div> */}
 
               <div className="flex-1 space-y-3">
                 <div className="flex flex-wrap items-center gap-3">

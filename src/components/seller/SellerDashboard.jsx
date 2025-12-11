@@ -1,27 +1,15 @@
-// // src/components/seller/SellerDashboard.jsx
-// import { useState } from 'react';
-// import AddProductForm from './AddProductForm';
-// import Modal from '../ui/Modal';
-// import Button from '../ui/Button';
-
-// export default function SellerDashboard() {
-//   const [showModal, setShowModal] = useState(false);
-
-//   const handleAddProduct = (product) => {
-//     console.log('Yangi tovar:', product);
-//     setShowModal(false);
-//     // Real backendga jo'natish
-//   };
 // src/components/seller/SellerDashboard.jsx
 import { useState, useEffect, useMemo } from 'react';
 
 import { Link } from 'react-router-dom';
 import { Upload, Package, DollarSign, MapPin, Tag, User, FileText, CheckCircle } from 'lucide-react';
 import { getCategories } from '../../api/categories';
-import { createProduct, getMyProducts, deleteProduct } from '../../api/products';
+import { createProduct, getMyProducts, deleteProduct, partialUpdateProduct } from '../../api/products';
 import axiosInstance from '../../api/axiosInstance';
+import { useNotification } from '../../context/NotificationContext';
 
 export default function SellerDashboard() {
+  const { showNotification } = useNotification();
   const generateUid = () => {
     if (window?.crypto?.randomUUID) {
       return window.crypto.randomUUID();
@@ -39,6 +27,8 @@ export default function SellerDashboard() {
     location: '',
     status: 'pending',
   });
+
+  const [editingUid, setEditingUid] = useState(null);
 
   const [photos, setPhotos] = useState([null, null, null, null, null]); // { file, preview }
 
@@ -139,7 +129,11 @@ export default function SellerDashboard() {
     e.preventDefault();
 
     if (!isLoggedIn) {
-      alert("Mahsulot joylash uchun avval tizimga kiring.");
+      showNotification({
+        type: 'warning',
+        title: 'Tizimga kiring',
+        message: "Mahsulot joylash uchun avval akkauntingizga kiring.",
+      });
       return;
     }
 
@@ -157,32 +151,57 @@ export default function SellerDashboard() {
     setFormError(null);
 
     try {
-      const formData = new FormData();
-      if (form.uid) formData.append("uid", form.uid);
-      formData.append("name", form.name);
-      formData.append("cost", String(form.cost));
-      formData.append("amount", String(form.amount));
+      if (editingUid) {
+        // Faqat asosiy maydonlarni yangilaymiz (rasmlarni hozircha o'zgartirmaymiz)
+        const payload = {
+          name: form.name,
+          cost: String(form.cost),
+          amount: String(form.amount),
+          category: form.category,
+          description: form.description,
+          location: form.location,
+          status: form.status,
+        };
 
-      const ownerUid = ownerInfo?.uid || ownerInfo?.id;
-      if (!ownerUid) {
-        throw new Error("Profil ma'lumotlari topilmadi. Ilova qayta ishga tushiring.");
-      }
-      formData.append("owner", ownerUid);
+        await partialUpdateProduct(editingUid, payload);
 
-      formData.append("category", form.category);
-      formData.append("description", form.description);
-      formData.append("location", form.location);
-      formData.append("status", form.status);
+        showNotification({
+          type: 'success',
+          title: 'Mahsulot yangilandi',
+          message: "Mahsulot ma'lumotlari muvaffaqiyatli yangilandi.",
+        });
+      } else {
+        const formData = new FormData();
+        if (form.uid) formData.append("uid", form.uid);
+        formData.append("name", form.name);
+        formData.append("cost", String(form.cost));
+        formData.append("amount", String(form.amount));
 
-      photos.forEach((photo, index) => {
-        if (photo?.file) {
-          formData.append(`photo${index + 1}`, photo.file);
+        const ownerUid = ownerInfo?.uid || ownerInfo?.id;
+        if (!ownerUid) {
+          throw new Error("Profil ma'lumotlari topilmadi. Ilova qayta ishga tushiring.");
         }
-      });
+        formData.append("owner", ownerUid);
 
-      await createProduct(formData);
+        formData.append("category", form.category);
+        formData.append("description", form.description);
+        formData.append("location", form.location);
+        formData.append("status", form.status);
 
-      alert("Mahsulot muvaffaqiyatli qo'shildi!");
+        photos.forEach((photo, index) => {
+          if (photo?.file) {
+            formData.append(`photo${index + 1}`, photo.file);
+          }
+        });
+
+        await createProduct(formData);
+
+        showNotification({
+          type: 'success',
+          title: "Mahsulot qo'shildi",
+          message: 'Yangi mahsulotingiz tekshiruvga yuborildi.',
+        });
+      }
 
       setForm({
         uid: generateUid(),
@@ -195,10 +214,13 @@ export default function SellerDashboard() {
         status: 'pending',
       });
       resetPhotos();
+      setEditingUid(null);
 
       await loadMyProducts();
     } catch (err) {
-      console.error('Mahsulot yaratishda xato:', err.response?.data || err.message);
+      const baseTitle = editingUid ? 'Mahsulotni yangilashda xato' : 'Mahsulot yaratishda xato';
+      const baseDefault = editingUid ? 'Mahsulot yangilanmadi' : 'Mahsulot yaratilmadi';
+      console.error(baseTitle + ':', err.response?.data || err.message);
       const detail = err.response?.data || err.message;
       if (typeof detail === 'string') {
         setFormError(detail);
@@ -208,16 +230,38 @@ export default function SellerDashboard() {
         const message = Object.entries(detail)
           .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
           .join('\n');
-        setFormError(message || 'Mahsulot yaratilmadi');
+        setFormError(message || baseDefault);
       } else {
-        setFormError('Mahsulot yaratilmadi');
+        setFormError(baseDefault);
       }
+      showNotification({
+        type: 'error',
+        title: baseTitle,
+        message: 'Iltimos, formadagi xabarni tekshiring.',
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const uidDisplay = useMemo(() => form.uid.slice(0, 8) + '…' + form.uid.slice(-4), [form.uid]);
+
+  const startEdit = (product) => {
+    const productUid = product.uid || product.id || form.uid;
+    setEditingUid(productUid);
+    setForm({
+      uid: productUid,
+      name: product.name || product.title || '',
+      cost: String(product.cost || product.price || ''),
+      amount: String(product.amount || product.stock || 1),
+      category: product.category?.uid || product.category || '',
+      description: product.description || '',
+      location: product.location || '',
+      status: product.status || 'pending',
+    });
+    setPhotos([null, null, null, null, null]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleDelete = async (uid) => {
     if (!uid) return;
@@ -229,7 +273,11 @@ export default function SellerDashboard() {
       await loadMyProducts();
     } catch (err) {
       console.error("Mahsulot o'chirish xatosi:", err);
-      alert("Mahsulot o'chirilmadi");
+      showNotification({
+        type: 'error',
+        title: "Mahsulot o'chirilmadi",
+        message: 'Qayta urinib ko\'ring yoki internetni tekshiring.',
+      });
     }
   };
 
@@ -265,8 +313,14 @@ export default function SellerDashboard() {
       <div className="max-w-5xl mx-auto">
         {/* Sarlavha */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-800 mb-3">Yangi Mahsulot Qo'shish</h1>
-          <p className="text-gray-600">Barcha maydonlarni to'ldiring va e'lon bering</p>
+          <h1 className="text-4xl font-bold text-gray-800 mb-3">
+            {editingUid ? "Mahsulotni tahrirlash" : "Yangi Mahsulot Qo'shish"}
+          </h1>
+          <p className="text-gray-600">
+            {editingUid
+              ? "Tanlangan mahsulot ma'lumotlarini yangilang."
+              : "Barcha maydonlarni to'ldiring va e'lon bering"}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-xl p-6 sm:p-8 lg:p-10 space-y-8">
@@ -487,7 +541,7 @@ export default function SellerDashboard() {
             ) : (
               <>
                 <Package className="w-5 h-5" />
-                Mahsulotni Qo'shish
+                {editingUid ? "Mahsulotni Yangilash" : "Mahsulotni Qo'shish"}
               </>
             )}
           </button>
@@ -522,13 +576,22 @@ export default function SellerDashboard() {
                       Holati: {p.status || 'Noma’lum'}
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(p.uid || p.id)}
-                    className="text-xs font-semibold text-red-500 hover:text-red-600 px-3 py-1.5 rounded-full bg-red-50 hover:bg-red-100 transition-colors"
-                  >
-                    O'chirish
-                  </button>
+                  <div className="flex flex-col items-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => startEdit(p)}
+                      className="text-xs font-semibold text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors"
+                    >
+                      Tahrirlash
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(p.uid || p.id)}
+                      className="text-xs font-semibold text-red-500 hover:text-red-600 px-3 py-1.5 rounded-full bg-red-50 hover:bg-red-100 transition-colors"
+                    >
+                      O'chirish
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

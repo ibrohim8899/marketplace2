@@ -1,12 +1,18 @@
 // src/components/review/ReviewList.jsx
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { getComments } from '../../api/comments';
-import { User, Trash2 } from 'lucide-react';
+import { getComments, deleteComment, updateComment } from '../../api/comments';
+import axiosInstance from '../../api/axiosInstance';
+import { useNotification } from '../../context/NotificationContext';
+import { Trash2, Edit2, Check, X } from 'lucide-react';
 
 export default function ReviewList({ productId, onCommentDeleted }) {
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editingText, setEditingText] = useState('');
+  const [actionLoadingId, setActionLoadingId] = useState(null);
+  const { showNotification } = useNotification();
 
   const fetchComments = async () => {
     setLoading(true);
@@ -25,9 +31,124 @@ export default function ReviewList({ productId, onCommentDeleted }) {
     fetchComments();
   }, [productId]);
 
-  const handleRefresh = () => {
-    fetchComments();
-    if (onCommentDeleted) onCommentDeleted();
+  // Joriy foydalanuvchini aniqlash
+  useEffect(() => {
+    const loadProfile = async () => {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        setCurrentUserId(null);
+        return;
+      }
+      try {
+        const { data } = await axiosInstance.get('/user/profile/');
+        setCurrentUserId(data.uid || data.id || null);
+      } catch (err) {
+        console.error("Profil ma'lumotlari olinmadi (commentlar uchun):", err.response?.data || err.message);
+        setCurrentUserId(null);
+      }
+    };
+
+    loadProfile();
+  }, []);
+
+  const isOwner = (comment) => {
+    if (!currentUserId || !comment) return false;
+
+    const candidateIds = [];
+
+    // owner may come in several shapes
+    if (comment.owner_id) candidateIds.push(comment.owner_id);
+    if (comment.owner) candidateIds.push(comment.owner);
+    if (comment.owner?.uid) candidateIds.push(comment.owner.uid);
+    if (comment.owner?.id) candidateIds.push(comment.owner.id);
+
+    // some backends may use user / user_id
+    if (comment.user_id) candidateIds.push(comment.user_id);
+    if (comment.user?.uid) candidateIds.push(comment.user.uid);
+    if (comment.user?.id) candidateIds.push(comment.user.id);
+
+    return candidateIds
+      .filter(Boolean)
+      .some((val) => String(val) === String(currentUserId));
+  };
+
+  const handleDelete = async (comment) => {
+    if (!isOwner(comment)) return;
+    const id = comment.uid || comment.id;
+    if (!id) return;
+    setActionLoadingId(id);
+    try {
+      await deleteComment(id);
+      showNotification({
+        type: 'success',
+        title: "Sharh o'chirildi",
+        message: "Sharhingiz muvaffaqiyatli o'chirildi.",
+      });
+      await fetchComments();
+      if (onCommentDeleted) onCommentDeleted();
+    } catch (err) {
+      const detail =
+        err.response?.data?.detail ||
+        (typeof err.response?.data === 'string' ? err.response.data : err.message);
+      showNotification({
+        type: 'error',
+        title: "Sharh o'chirilmadi",
+        message: detail,
+      });
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const startEdit = (comment) => {
+    if (!isOwner(comment)) return;
+    const id = comment.uid || comment.id;
+    setEditingId(id);
+    setEditingText(comment.body || comment.text || comment.comment || '');
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
+    setEditingText('');
+  };
+
+  const handleUpdate = async (comment) => {
+    if (!isOwner(comment)) return;
+    const id = comment.uid || comment.id;
+    if (!id) return;
+
+    if (!editingText.trim()) {
+      showNotification({
+        type: 'warning',
+        title: "Matn bo'sh",
+        message: 'Sharh matnini kiriting.',
+      });
+      return;
+    }
+
+    setActionLoadingId(id);
+    try {
+      await updateComment(id, editingText.trim());
+      showNotification({
+        type: 'success',
+        title: 'Sharh yangilandi',
+        message: 'Sharhingiz muvaffaqiyatli yangilandi.',
+      });
+      setEditingId(null);
+      setEditingText('');
+      await fetchComments();
+    } catch (err) {
+      const detail =
+        err.response?.data?.detail ||
+        (typeof err.response?.data === 'string' ? err.response.data : err.message);
+      showNotification({
+        type: 'error',
+        title: 'Sharh yangilanmadi',
+        message: detail,
+      });
+    } finally {
+      setActionLoadingId(null);
+    }
   };
 
   if (loading) return <p className="text-center text-gray-500">Yuklanyapti...</p>;
@@ -37,43 +158,110 @@ export default function ReviewList({ productId, onCommentDeleted }) {
       {comments.length === 0 ? (
         <p className="text-center text-gray-500 py-8">Hali sharhlar yo'q</p>
       ) : (
-        comments.map((comment) => (
-          <div key={comment.uid || comment.id} className="border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow">
-            {/* Commenter ma'lumotlari */}
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                  {comment.owner_name?.charAt(0) || comment.user?.first_name?.charAt(0) || comment.user?.email?.charAt(0) || 'U'}
-                </div>
-                <div>
-                  <div className="font-semibold text-gray-800">
-                    {comment.owner_name || `${comment.user?.first_name} ${comment.user?.last_name || comment.user?.email}` || 'Noma\'lum'}
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    {new Date(comment.created_at).toLocaleDateString('uz-UZ')}
-                  </p>
-                </div>
-              </div>
-              
-              {/* Reyting */}
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <span
-                    key={i}
-                    className={`text-lg ${
-                      i < (comment.rating || 5) ? 'text-yellow-400' : 'text-gray-300'
-                    }`}
-                  >
-                    ★
-                  </span>
-                ))}
-              </div>
-            </div>
+        comments.map((comment) => {
+          const commentId = comment.uid || comment.id;
+          const own = isOwner(comment);
+          const isEditing = editingId === commentId;
+          const isBusy = actionLoadingId === commentId;
+          const displayText = isEditing
+            ? editingText
+            : (comment.body || comment.text || comment.comment);
 
-            {/* Sharh matni */}
-            <p className="text-gray-700 leading-relaxed">{comment.body || comment.text || comment.comment}</p>
-          </div>
-        ))
+          return (
+            <div
+              key={commentId}
+              className="border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow"
+            >
+              {/* Commenter ma'lumotlari */}
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                    {comment.owner_name?.charAt(0) || comment.user?.first_name?.charAt(0) || comment.user?.email?.charAt(0) || 'U'}
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-800">
+                      {comment.owner_name || `${comment.user?.first_name} ${comment.user?.last_name || comment.user?.email}` || 'Noma\'lum'}
+                    </div>
+                    <p className="text-xs text-gray-500">
+                      {new Date(comment.created_at).toLocaleDateString('uz-UZ')}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-end gap-2">
+                  {/* Reyting */}
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <span
+                        key={i}
+                        className={`text-lg ${
+                          i < (comment.rating || 5) ? 'text-yellow-400' : 'text-gray-300'
+                        }`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+
+                  {own && (
+                    <div className="flex gap-1">
+                      {isEditing ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => handleUpdate(comment)}
+                            disabled={isBusy}
+                            className="p-1.5 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-xs disabled:opacity-60"
+                          >
+                            <Check className="w-3 h-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={cancelEdit}
+                            disabled={isBusy}
+                            className="p-1.5 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 text-xs disabled:opacity-60"
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => startEdit(comment)}
+                            className="p-1.5 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(comment)}
+                            disabled={isBusy}
+                            className="p-1.5 rounded-full bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs disabled:opacity-60"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Sharh matni */}
+              {isEditing ? (
+                <textarea
+                  value={editingText}
+                  onChange={(e) => setEditingText(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500"
+                  rows={3}
+                />
+              ) : (
+                <p className="text-gray-700 leading-relaxed">{displayText}</p>
+              )}
+            </div>
+          );
+        })
       )}
     </div>
   );

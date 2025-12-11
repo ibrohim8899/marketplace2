@@ -58,9 +58,11 @@ export default function useInfiniteProducts({ category, searchQuery, priceRange,
         let data;
 
         const hasSearch = !!searchQuery?.trim();
+        const hasCategory = !!category?.trim();
         const hasPriceRange = priceRange && priceRange.min != null && priceRange.max != null;
         const hasLocation = !!locationFilter?.trim();
 
+        // Priority: price > location > category > search > all
         if (hasPriceRange) {
           console.log("Narx oralig'i bo'yicha yuklanmoqda:", priceRange);
           data = await filterProductsByCost({
@@ -74,12 +76,12 @@ export default function useInfiniteProducts({ category, searchQuery, priceRange,
             location: locationFilter,
             search: hasSearch ? searchQuery : undefined,
           });
+        } else if (hasCategory) {
+          console.log("Kategoriya bo'yicha yuklanmoqda:", category);
+          data = await getProductsByCategory(category);
         } else if (hasSearch) {
           console.log("Qidiruv bo'yicha yuklanmoqda:", searchQuery);
           data = await searchProducts(searchQuery);
-        } else if (category && category !== "all") {
-          console.log("Kategoriya bo'yicha yuklanmoqda:", category);
-          data = await getProductsByCategory(category);
         } else {
           console.log("Barcha mahsulotlar yuklanmoqda");
           data = await getProducts();

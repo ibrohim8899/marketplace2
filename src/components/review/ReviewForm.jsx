@@ -2,12 +2,14 @@
 import { useState } from 'react';
 import Button from '../ui/Button';
 import { createComment } from '../../api/comments';
+import { useNotification } from '../../context/NotificationContext';
 
 export default function ReviewForm({ productId, onAdded }) {
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { showNotification } = useNotification();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,7 +21,13 @@ export default function ReviewForm({ productId, onAdded }) {
 
     const token = localStorage.getItem('access_token');
     if (!token) {
-      setError('Sharh yozish uchun tizimga kiring!');
+      const msg = "Sharh yozish uchun tizimga kiring!";
+      setError(msg);
+      showNotification({
+        type: 'warning',
+        title: 'Tizimga kiring',
+        message: msg,
+      });
       return;
     }
 
@@ -31,8 +39,25 @@ export default function ReviewForm({ productId, onAdded }) {
       setComment('');
       setRating(5);
       if (onAdded) onAdded();
+
+      showNotification({
+        type: 'success',
+        title: 'Sharh yuborildi',
+        message: 'Sharhingiz muvaffaqiyatli saqlandi.',
+      });
     } catch (err) {
-      setError('Sharh qo\'shishda xatolik: ' + (err.response?.data?.detail || err.message));
+      const detail =
+        err.response?.data?.detail ||
+        (typeof err.response?.data === 'string'
+          ? err.response.data
+          : err.message);
+      const msg = "Sharh qo'shishda xatolik: " + detail;
+      setError(msg);
+      showNotification({
+        type: 'error',
+        title: 'Sharh yuborilmadi',
+        message: detail,
+      });
     } finally {
       setLoading(false);
     }
