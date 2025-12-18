@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom'; // Agar yo'q bo'lsa qo'shing
 import Home from './pages/Home';
 import Categories from './pages/Categories'; // Bu sahifa endi UID orqali ishlaydi
@@ -14,8 +15,105 @@ import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
 import Navbar from './components/layout/Navbar'; // Agar yo'q bo'lsa, qo'shing
 import Footer from './components/layout/Footer'; // Agar yo'q bo'lsa, qo'shing
+import { loginWithTelegram } from './api/auth';
 
 export default function App() {
+  useEffect(() => {
+    // Telegram WebApp auto-login (faqat Telegram ichida ishlaydi)
+    const initTelegramAuth = async () => {
+      try {
+        if (typeof window === 'undefined') {
+          return;
+        }
+
+        const tg = window.Telegram && window.Telegram.WebApp;
+        if (!tg) {
+          // Oddiy browserda - bu normal holat, xato emas
+          return;
+        }
+
+        const hasToken = !!localStorage.getItem('access_token');
+        if (hasToken) {
+          console.log("[Telegram] Token mavjud, auto-login kerak emas.");
+          return;
+        }
+
+      const initDataUnsafe = tg.initDataUnsafe || {};
+      const rawInitData = tg.initData || "";
+
+      let user = initDataUnsafe.user;
+
+      if ((!user || !user.id) && rawInitData) {
+        try {
+          const params = new URLSearchParams(rawInitData);
+          const userStr = params.get("user");
+          if (userStr) {
+            const parsedUser = JSON.parse(userStr);
+            if (parsedUser && parsedUser.id) {
+              user = parsedUser;
+            }
+          }
+        } catch (e) {
+          console.error("Telegram user parse xatoligi:", e);
+        }
+      }
+
+      if (!user || !user.id) {
+        console.warn("[Telegram] user ma'lumoti topilmadi, auto-login to'xtadi.");
+        return;
+      }
+
+      let hash = initDataUnsafe.hash;
+      let authDate = initDataUnsafe.auth_date;
+
+      if (!hash || !authDate) {
+        try {
+          const params = new URLSearchParams(rawInitData);
+          if (!hash) hash = params.get("hash");
+          if (!authDate) authDate = params.get("auth_date");
+        } catch (e) {
+          console.error("Telegram initData parse xatoligi:", e);
+        }
+      }
+
+      if (!hash) {
+        console.warn("[Telegram] hash topilmadi, auto-login to'xtadi.");
+        return;
+      }
+
+      const telegramData = {
+        id: user.id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        username: user.username,
+        photo_url: user.photo_url,
+        auth_date: authDate,
+        hash,
+      };
+
+      console.log("[Telegram] Auto login urinyapti", telegramData);
+
+      loginWithTelegram(telegramData)
+        .then((result) => {
+          console.log("[Telegram] loginWithTelegram yakuni:", result);
+          if (!result) {
+            console.error("[Telegram] loginWithTelegram true qaytarmadi, access_token kelmadi.");
+          }
+        })
+        .catch((error) => {
+          console.error(
+            "Telegram auto login xatoligi:",
+            error?.response?.data || error.message || error,
+          );
+        });
+    } catch (error) {
+      console.error("Telegram WebApp init xatoligi:", error);
+    }
+  };
+
+    initTelegramAuth();
+  }, []);
+
   return (
     <CartProvider>
       <Navbar />
@@ -25,7 +123,7 @@ export default function App() {
         <Route path="/category/:uid" element={<Categories />} /> {/* UID orqali o'zgartirdim */}
         <Route path="/product/:uid" element={<ProductDetailPage />} /> {/* :id → :uid qildim, logik bo'lsin */}
         <Route path="/seller" element={<SellerDashboard />} />
-        <Route path="/top-sellers" element={<TopSellers />} />
+        {/* <Route path="/top-sellers" element={<TopSellers />} /> */}
         <Route path="/search" element={<SearchResults />} />
         <Route path="/profile" element={<ProfileCard />} />
         <Route path="/login" element={<LoginPage />} />

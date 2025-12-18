@@ -2,8 +2,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "/api",
-  withCredentials: true, // Cookie va CSRF uchun
+  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
+  // withCredentials: true, // CORS muammosi uchun o'chirildi
 });
 
 // Agar token bo'lsa (kelajakda login bo'lsa)

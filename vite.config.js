@@ -8,14 +8,14 @@ export default defineConfig({
     tailwindcss()
   ],
 
-  server: {
-    proxy: {
-      "/api": {
-        target: "https://qrmenu.pythonanywhere.com",
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, "")
-      }
-    }
-  }
+  // server: {
+  //   proxy: {
+  //     "/api": {
+  //       target: "https://qrmenu.pythonanywhere.com",
+  //       changeOrigin: true,
+  //       secure: false,
+  //       rewrite: (path) => path.replace(/^\/api/, "")
+  //     }
+  //   }
+  // }
 })

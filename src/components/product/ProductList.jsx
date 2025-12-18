@@ -27,9 +27,11 @@ export default function ProductList({ category, categoryFilter, searchQuery, pri
     return <div className="col-span-full text-center py-20 text-red-500 text-lg">{error}</div>;
   }
 
+  const safeProducts = Array.isArray(products) ? products : [];
+
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-      {products.map((product) => (
+      {safeProducts.map((product) => (
         <ProductCard key={product.uid} product={product} />
       ))}
 
@@ -41,7 +43,7 @@ export default function ProductList({ category, categoryFilter, searchQuery, pri
         <div ref={ref} className="col-span-full h-10" />
       )}
 
-      {!loading && products.length === 0 && (
+      {!loading && safeProducts.length === 0 && (
         <div className="col-span-full text-center py-20 text-gray-500 text-lg">
           Bu filtr bo‘yicha tovar topilmadi
         </div>

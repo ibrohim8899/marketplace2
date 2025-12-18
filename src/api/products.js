@@ -5,26 +5,32 @@ import axiosInstance from "./axiosInstance";
 let cachedProducts = null;
 
 function normalizeProductList(data) {
+  if (!data) return [];
   if (Array.isArray(data)) return data;
   if (Array.isArray(data?.results)) return data.results;
   if (Array.isArray(data?.products)) return data.products;
   if (Array.isArray(data?.results?.products)) return data.results.products;
-  return data || [];
+  return [];
 }
 
 const getAllProducts = async () => {
   if (cachedProducts) {
+    console.log("Cache'dan mahsulotlar qaytarildi:", cachedProducts.length);
     return cachedProducts;
   }
   
   try {
+    console.log("Mahsulotlar yuklanmoqda...");
     const res = await axiosInstance.get("/product/products/");
+    console.log("Backend javobi:", res.data);
     const list = normalizeProductList(res.data);
+    console.log("Normalize qilingan mahsulotlar:", list.length, list.slice(0, 2));
     cachedProducts = list; // cache ga saqlaymiz
     console.log("Mahsulotlar yuklandi va cache ga joylandi:", list.length);
     return list;
   } catch (err) {
     console.error("Mahsulotlar yuklanmadi:", err);
+    console.error("Xato tafsiloti:", err.response?.data || err.message);
     return [];
   }
 };
@@ -49,7 +55,7 @@ export const getProductsByCategory = async (category) => {
   return normalizeProductList(res.data);
 };
 
-export const filterProductsByCost = async ({ min, max, search, limit, offset } = {}) => {
+export const filterProductsByCost = async ({ min, max, limit, offset } = {}) => {
   if (min == null || max == null) {
     return await getAllProducts();
   }
@@ -58,7 +64,6 @@ export const filterProductsByCost = async ({ min, max, search, limit, offset } =
     params: {
       min,
       max,
-      search,
       limit,
       offset,
     },
@@ -67,7 +72,7 @@ export const filterProductsByCost = async ({ min, max, search, limit, offset } =
   return normalizeProductList(res.data);
 };
 
-export const filterProductsByLocation = async ({ location, search, limit, offset } = {}) => {
+export const filterProductsByLocation = async ({ location, limit, offset } = {}) => {
   if (!location) {
     return await getAllProducts();
   }
@@ -75,7 +80,6 @@ export const filterProductsByLocation = async ({ location, search, limit, offset
   const res = await axiosInstance.get("/filters/products/filter/location/", {
     params: {
       location,
-      search,
       limit,
       offset,
     },
@@ -92,8 +96,7 @@ export const searchProducts = async (query, options = {}) => {
 
   const res = await axiosInstance.get("/filters/products/search/", {
     params: {
-      q: query,
-      search: options.search,
+      query: query,  // Backend 'query' parametrini kutadi
       limit: options.limit,
       offset: options.offset,
     },

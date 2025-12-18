@@ -111,7 +111,7 @@ export default function ProfileCard() {
 
   if (!hasToken || !profile) {
     return (
-      <div className="min-h-screen bg-gray-50 px-4 py-16">
+      <div className="min-h-screen px-4 py-16">
         <div className="max-w-xl mx-auto">{renderEmptyState()}</div>
       </div>
     );
@@ -134,7 +134,7 @@ export default function ProfileCard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-10 px-4 sm:py-12 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           <div className="bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-6 py-8 sm:px-8 sm:py-10 text-white">
@@ -171,7 +171,7 @@ export default function ProfileCard() {
           <div className="px-6 py-8 sm:px-8 sm:py-10 space-y-8">
             <div className="grid gap-4 md:grid-cols-2">
               {infoItems.map(({ label, value, icon: Icon, accent }) => (
-                <div key={label} className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+                <div key={label} className="rounded-2xl border border-gray-100 p-4">
                   <p className="text-xs uppercase tracking-wide text-gray-500 flex items-center gap-2">
                     <Icon className={`w-4 h-4 ${accent}`} />
                     {label}

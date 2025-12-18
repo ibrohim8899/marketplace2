@@ -68,13 +68,11 @@ export default function useInfiniteProducts({ category, searchQuery, priceRange,
           data = await filterProductsByCost({
             min: priceRange.min,
             max: priceRange.max,
-            search: hasSearch ? searchQuery : undefined,
           });
         } else if (hasLocation) {
           console.log("Joylashuv bo'yicha yuklanmoqda:", locationFilter);
           data = await filterProductsByLocation({
             location: locationFilter,
-            search: hasSearch ? searchQuery : undefined,
           });
         } else if (hasCategory) {
           console.log("Kategoriya bo'yicha yuklanmoqda:", category);

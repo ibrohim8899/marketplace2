@@ -239,16 +239,31 @@ export default function CategorySlider() {
   useEffect(() => {
     getCategories()
       .then(data => {
-        const cats = data.results || data;
-        // Qo‘shimcha "Barcha" kategoriyasini eng boshiga qo‘shamiz
+        console.log('Kategoriyalar backend javobi:', data);
+        const cats = Array.isArray(data) ? data : (data.results || data.data || []);
+        console.log('Kategoriyalar massivi:', cats);
+        
+        // Faqat massiv bo'lsa davom etamiz
+        if (!Array.isArray(cats)) {
+          console.error('Kategoriyalar massiv emas:', cats);
+          setCategories([{ uid: 'all', name: 'Barcha' }]);
+          setLoading(false);
+          return;
+        }
+        
+        // Qo'shimcha "Barcha" kategoriyasini eng boshiga qo'shamiz
         const allCategories = [
-          { uid: 'all', name: 'Barcha' }, // Maxsus UID va name
+          { uid: 'all', name: 'Barcha' },
           ...cats
         ];
         setCategories(allCategories);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((err) => {
+        console.error('Kategoriyalar yuklanmadi:', err);
+        setCategories([{ uid: 'all', name: 'Barcha' }]);
+        setLoading(false);
+      });
   }, []);
 
   // Qolgan kod o‘zgarmaydi (checkScroll, scrollLeft, va h.k.)

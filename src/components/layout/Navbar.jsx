@@ -8,7 +8,7 @@ export default function Navbar() {
         <Link to="/" className="text-xl font-bold text-blue-600">M</Link>
         <div className="flex gap-6 text-sm font-medium">
           <Link to="/seller" className="hover:text-blue-600">Sotuvchi</Link>
-          <Link to="/top-sellers" className="hover:text-blue-600">Top Sotuvchilar</Link>
+          {/* <Link to="/top-sellers" className="hover:text-blue-600">Top Sotuvchilar</Link> */}
         </div>
       </div>
     </nav>

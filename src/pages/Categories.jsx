@@ -44,10 +44,12 @@ export default function Categories() {
   }
 
   return (
-    <div className="pt-16 pb-20 min-h-screen">
+    <div className="pt-16 pb-20 min-h-screen bg-gray-50">
       <Container>
-        <h1 className="text-2xl font-bold mb-6">{categoryName}</h1>
-        <ProductList category={uid === 'all' ? null : categoryName} /> {/* "all" uchun category null – barcha chiqadi */}
+        <div className="py-4 space-y-6">
+          <h1 className="text-2xl font-bold">{categoryName}</h1>
+          <ProductList category={uid === 'all' ? null : categoryName} />
+        </div>
       </Container>
     </div>
   );
