@@ -44,7 +44,7 @@ export default function Categories() {
   }
 
   return (
-    <div className="pt-16 pb-20 min-h-screen bg-gray-50">
+    <div>
       <Container>
         <div className="py-4 space-y-6">
           <h1 className="text-2xl font-bold">{categoryName}</h1>

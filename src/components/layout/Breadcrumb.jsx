@@ -151,42 +151,39 @@ export default function Breadcrumb() {
   };
 
   return (
-    <nav className="from-slate-50 via-gray-50 to-slate-50">
-      <div className="max-w-[825px] mx-auto px-4 sm:px-6 lg:px-8 mt-13">
-        <ol className="flex items-center space-x-1 py-3.5 overflow-x-auto scrollbar-hide">
+    <nav className="bg-gray-50">
+
+      <div className="max-w-screen-md mx-auto px-4 border-b border-gray-200">
+        <ol className="flex items-center gap-1 py-2 overflow-x-auto scrollbar-hide text-xs">
           {/* Bosh sahifa */}
           <li className="flex items-center flex-shrink-0">
-            <Link 
-              to="/" 
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-gray-600 hover:text-blue-600 hover:bg-white transition-all duration-200 font-medium group border border-transparent hover:border-blue-100 hover:shadow-sm"
+            <Link
+              to="/"
+              className="flex items-center gap-1.5 px-2 py-1 rounded-full text-gray-600 hover:text-blue-600 hover:bg-white transition-all duration-200 font-medium group border border-transparent hover:border-blue-100"
             >
-              <Home className="w-4 h-4 group-hover:scale-110 transition-transform" />
-              <span className="text-sm">Bosh sahifa</span>
+              <Home className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+              <span className="text-[11px]">Bosh sahifa</span>
             </Link>
           </li>
-          
           {/* Dinamik yo'l bo'laklari */}
           {pathnames.map((segment, index) => {
             const { displayName, linkTo, shouldHideFromPath } = getBreadcrumbItem(segment, index);
-            
             // "category" va "product" so'zlarini ko'rsatmaymiz
             if (shouldHideFromPath) {
               return null;
             }
-            
             const isLast = index === pathnames.length - 1;
-            
             return (
               <li key={index} className="flex items-center flex-shrink-0">
-                <ChevronRight className="w-4 h-4 text-gray-400 mx-0.5 flex-shrink-0" />
+                <ChevronRight className="w-3 h-3 text-gray-400 mx-0.5 flex-shrink-0" />
                 {isLast ? (
-                  <span className="text-sm text-gray-900 font-semibold px-3 py-1.5 bg-white rounded-lg shadow-sm border border-gray-200">
+                  <span className="text-[11px] text-gray-900 font-semibold px-2.5 py-1 bg-white rounded-full border border-gray-200">
                     {displayName}
                   </span>
                 ) : (
-                  <Link 
+                  <Link
                     to={linkTo}
-                    className="text-sm text-gray-600 hover:text-blue-600 transition-all duration-200 font-medium px-2.5 py-1.5 rounded-lg hover:bg-white hover:shadow-sm border border-transparent hover:border-blue-100"
+                    className="text-[11px] text-gray-600 hover:text-blue-600 transition-all duration-200 font-medium px-2 py-1 rounded-full hover:bg-white border border-transparent hover:border-blue-100"
                   >
                     {displayName}
                   </Link>

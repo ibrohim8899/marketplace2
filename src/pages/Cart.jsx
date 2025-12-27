@@ -14,7 +14,7 @@ export default function Cart() {
 
   if (!cart || cart.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 pt-16 pb-20">
+      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-8 bg-gray-50">
         <div className="text-center space-y-6">
           <div className="w-32 h-32 mx-auto bg-gray-100 rounded-full flex items-center justify-center">
             <ShoppingBag className="w-16 h-16 text-gray-400" />
@@ -71,7 +71,7 @@ export default function Cart() {
   const hasActiveFilters = searchQuery || selectedCategory !== 'all' || priceSort !== 'none';
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16 pb-32">
+    <div>
       <div className="max-w-4xl mx-auto px-4 py-6">
 
         <div className="flex items-center justify-between mb-4">

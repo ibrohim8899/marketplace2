@@ -291,9 +291,12 @@ export default function CategorySlider() {
 
   if (loading) {
     return (
-      <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 px-4">
+      <div className="flex gap-2 overflow-x-auto no-scrollbar py-1 px-1">
         {[...Array(6)].map((_, i) => (
-          <div key={i} className="min-w-max px-4 py-2 bg-gray-200 rounded-lg animate-pulse" />
+          <div
+            key={i}
+            className="h-7 w-16 rounded-full bg-slate-200/80 animate-pulse flex-shrink-0"
+          />
         ))}
       </div>
     );

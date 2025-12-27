@@ -15,7 +15,7 @@ import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
 import Navbar from './components/layout/Navbar'; // Agar yo'q bo'lsa, qo'shing
 import Footer from './components/layout/Footer'; // Agar yo'q bo'lsa, qo'shing
-import { loginWithTelegram } from './api/auth';
+import { loginWithTelegram, applyTokensFromUrl } from './api/auth';
 
 export default function App() {
   useEffect(() => {
@@ -30,6 +30,34 @@ export default function App() {
         if (!tg) {
           // Oddiy browserda - bu normal holat, xato emas
           return;
+        }
+
+        try {
+          const url = new URL(window.location.href);
+          const urlAccessToken =
+            url.searchParams.get('access_token') ||
+            url.searchParams.get('token') ||
+            url.searchParams.get('access');
+          const urlRefreshToken =
+            url.searchParams.get('refresh_token') ||
+            url.searchParams.get('refresh');
+
+          if (urlAccessToken) {
+            const applied = await applyTokensFromUrl({
+              access: urlAccessToken,
+              refresh: urlRefreshToken,
+            });
+
+            if (applied) {
+              const cleanUrl =
+                window.location.origin + window.location.pathname + window.location.hash;
+              window.history.replaceState({}, document.title, cleanUrl);
+              console.log('[Telegram] URL token orqali auto-login bajarildi.');
+              return;
+            }
+          }
+        } catch (e) {
+          console.error('[Telegram] URL token parse xatoligi:', e);
         }
 
         const hasToken = !!localStorage.getItem('access_token');
@@ -117,8 +145,9 @@ export default function App() {
   return (
     <CartProvider>
       <Navbar />
-      <Breadcrumb />
-      <Routes>
+      <div className="min-h-screen bg-gray-50 pt-14 pb-20">
+        <Breadcrumb />
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/category/:uid" element={<Categories />} /> {/* UID orqali o'zgartirdim */}
         <Route path="/product/:uid" element={<ProductDetailPage />} /> {/* :id → :uid qildim, logik bo'lsin */}
@@ -130,7 +159,8 @@ export default function App() {
         <Route path="/cart" element={<Cart />} /> 
         <Route path="/wishlist" element={<Wishlist />} /> 
         <Route path="*" element={<NotFound />} />
-      </Routes>
+        </Routes>
+      </div>
       <Footer />
     </CartProvider>
   );

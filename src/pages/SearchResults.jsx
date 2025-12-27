@@ -15,7 +15,7 @@ export default function SearchResults() {
   const priceRange = min && max ? { min: Number(min), max: Number(max) } : null;
 
   return (
-    <div className="pt-16 pb-20 min-h-screen bg-gray-50">
+    <div>
       <Container>
         <div className="py-4 space-y-6">
           {/* Qidiruv sarlavhasi va izoh */}
@@ -23,9 +23,6 @@ export default function SearchResults() {
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
               Qidiruv natijalari
             </h1>
-            <p className="text-sm text-gray-600">
-              Siz qidirgan so'z: <span className="font-semibold text-gray-900">"{searchQuery}"</span>
-            </p>
           </div>
 
           {/* Qidiruv va filter paneli */}

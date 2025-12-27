@@ -8,7 +8,7 @@ export default function Wishlist() {
 
   if (wishlist.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 pt-16 pb-20 bg-gray-50">
+      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-8 bg-gray-50">
         <div className="text-center space-y-6">
           <div className="w-32 h-32 mx-auto bg-gradient-to-br from-pink-100 to-red-100 rounded-full flex items-center justify-center">
             <Heart className="w-16 h-16 text-red-400" />
@@ -28,7 +28,7 @@ export default function Wishlist() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16 pb-20">
+    <div>
       <div className="max-w-screen-md mx-auto px-4 py-4">
         <div className="flex items-center gap-3 mb-4">
           <Heart className="w-8 h-8 text-red-500 fill-current" />

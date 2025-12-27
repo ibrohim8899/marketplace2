@@ -73,3 +73,39 @@ export const loginWithTelegram = async (telegramData) => {
     throw error;
   }
 };
+
+export const applyTokensFromUrl = async ({ access, refresh }) => {
+  try {
+    if (!access) {
+      console.warn("[Telegram] URL token topilmadi yoki bo'sh, auto-login bekor qilindi.");
+      return false;
+    }
+
+    localStorage.setItem("access_token", access);
+
+    if (refresh) {
+      localStorage.setItem("refresh_token", refresh);
+    }
+
+    try {
+      const { data } = await axiosInstance.get("/user/profile/");
+      if (data) {
+        try {
+          localStorage.setItem("user_profile", JSON.stringify(data));
+        } catch (err) {
+          console.error("Profilni localStorage'ga saqlab bo'lmadi:", err);
+        }
+      }
+    } catch (err) {
+      console.error(
+        "Auto-login paytida profilni yuklashda xatolik:",
+        err.response?.data || err.message,
+      );
+    }
+
+    return true;
+  } catch (e) {
+    console.error("URL token orqali auto-login umumiy xatolik:", e);
+    return false;
+  }
+};

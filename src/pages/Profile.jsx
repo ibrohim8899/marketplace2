@@ -78,19 +78,19 @@ export default function ProfileCard() {
   };
 
   const renderEmptyState = () => (
-    <div className="bg-white rounded-3xl shadow-xl p-8 text-center space-y-5">
-      <div className="mx-auto w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+    <div className="bg-white rounded-2xl shadow-md p-6 text-center space-y-4 overflow-x-hidden">
+      <div className="mx-auto w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
         <User className="w-8 h-8" />
       </div>
       <div>
-        <h2 className="text-xl font-semibold text-gray-900">Profil ma'lumotlari mavjud emas</h2>
-        <p className="text-gray-500 text-sm mt-2">
+        <h2 className="text-lg font-semibold text-gray-900">Profil ma'lumotlari mavjud emas</h2>
+        <p className="text-gray-500 text-sm mt-1">
           {error || "Ilova imkoniyatlaridan foydalanish uchun tizimga kiring."}
         </p>
       </div>
       <button
         onClick={handleLogin}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-2xl transition-all flex items-center justify-center gap-2"
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
       >
         <LogIn className="w-5 h-5" />
         Kirish sahifasiga o'tish
@@ -100,7 +100,7 @@ export default function ProfileCard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-[calc(100vh-80px)] bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3 text-indigo-600">
           <Loader2 className="w-10 h-10 animate-spin" />
           <p className="text-sm font-medium">Profil ma'lumotlari yuklanmoqda...</p>
@@ -111,8 +111,8 @@ export default function ProfileCard() {
 
   if (!hasToken || !profile) {
     return (
-      <div className="min-h-screen px-4 py-16">
-        <div className="max-w-xl mx-auto">{renderEmptyState()}</div>
+      <div className=" px-4 py-8 bg-gray-50">
+        <div className="max-w-md mx-auto">{renderEmptyState()}</div>
       </div>
     );
   }
@@ -134,7 +134,7 @@ export default function ProfileCard() {
   ];
 
   return (
-    <div className="min-h-screen py-10 px-4 sm:py-12 sm:px-6 lg:px-8">
+    <div className="py-8 px-4 sm:py-10 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
           <div className="bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-6 py-8 sm:px-8 sm:py-10 text-white">

@@ -283,13 +283,13 @@ export default function SellerDashboard() {
 
   if (!isLoggedIn) {
     return (
-      <div className="min-h-screen from-blue-50 via-white to-purple-50 pt-16 pb-24 px-4 flex items-center justify-center">
-        <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 space-y-5 text-center">
+      <div className="min-h-[calc(100vh-80px)] bg-gray-50 px-4 py-8 flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-md p-6 space-y-4 text-center">
           <h1 className="text-2xl font-bold text-gray-900">Mahsulot joylash uchun tizimga kiring</h1>
           <p className="text-sm text-gray-600">
             Bu bo'lim faqat tizimga kirgan foydalanuvchilar uchun. Iltimos, avval akkauntingizga kiring.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 mt-4">
+          <div className="flex flex-col sm:flex-row gap-3 mt-3">
             <Link
               to="/login"
               className="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors"
@@ -309,7 +309,7 @@ export default function SellerDashboard() {
   }
 
   return (
-    <div className="min-h-screen from-blue-50 via-white to-purple-50 pt-16 pb-24 px-4">
+    <div className="min-h-[calc(100vh-80px)] bg-gray-50 px-4 py-6">
       <div className="max-w-5xl mx-auto">
         {/* Sarlavha */}
         <div className="text-center mb-10">

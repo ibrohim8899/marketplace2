@@ -1,39 +1,39 @@
-import { X } from 'lucide-react';
+import { X, CheckCircle2, AlertTriangle, Info, AlertCircle } from 'lucide-react';
 
-const typeStyles = {
-  success: 'border-emerald-500/80 bg-emerald-50 text-emerald-900',
-  error: 'border-rose-500/80 bg-rose-50 text-rose-900',
-  warning: 'border-amber-500/80 bg-amber-50 text-amber-900',
-  info: 'border-sky-500/80 bg-sky-50 text-sky-900',
+const iconByType = {
+  success: CheckCircle2,
+  error: AlertCircle,
+  warning: AlertTriangle,
+  info: Info,
 };
 
 export default function ToastContainer({ toasts, onClose }) {
   if (!toasts || toasts.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-3 w-full max-w-sm pointer-events-none">
+    <div className="fixed inset-x-0 top-4 z-[9999] flex flex-col items-center gap-3 pointer-events-none">
       {toasts.map((toast) => {
-        const style = typeStyles[toast.type] || typeStyles.info;
+        const Icon = iconByType[toast.type] || Info;
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto shadow-lg rounded-2xl border px-4 py-3 flex items-start gap-3 transform transition-all duration-300 animate-slide-in ${style}`}
+            className="pointer-events-auto w-full max-w-md shadow-lg rounded-2xl border border-gray-200 bg-white/95 px-4 py-3 flex items-start gap-3 transform transition-all duration-300 animate-slide-in backdrop-blur-sm"
           >
+            <div className="mt-0.5 flex-shrink-0">
+              <Icon className="w-5 h-5 text-gray-700" />
+            </div>
             <div className="flex-1 min-w-0">
               {toast.title && (
-                <p className="text-sm font-semibold leading-tight truncate">{toast.title}</p>
+                <p className="text-sm sm:text-base font-semibold leading-snug truncate">
+                  {toast.title}
+                </p>
               )}
               {toast.message && (
-                <p className="mt-0.5 text-xs leading-snug text-gray-700 line-clamp-3">{toast.message}</p>
+                <p className="mt-1 text-sm leading-snug text-gray-700">
+                  {toast.message}
+                </p>
               )}
             </div>
-            <button
-              type="button"
-              onClick={() => onClose(toast.id)}
-              className="ml-1 inline-flex items-center justify-center rounded-full p-1.5 text-xs text-gray-500 hover:bg-black/5 hover:text-gray-700 transition-colors"
-            >
-              <X className="w-3 h-3" />
-            </button>
           </div>
         );
       })}

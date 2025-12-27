@@ -10,12 +10,12 @@ export default function ProductCard({ product, loading = false }) {
   // Loading skeleton
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100">
-        <Skeleton className="w-full h-64" />
-        <div className="p-4 space-y-3">
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-6 w-1/2" />
-          <Skeleton className="h-10 w-full" />
+      <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100">
+        <Skeleton className="w-full aspect-square" />
+        <div className="p-3 space-y-2">
+          <Skeleton className="h-3 w-3/4" />
+          <Skeleton className="h-3 w-1/2" />
+          <Skeleton className="h-8 w-full mt-1" />
         </div>
       </div>
     );

@@ -7,7 +7,7 @@ import Container from '../components/layout/Container';
 
 export default function Home() {
   return (
-    <div className="pt-16 pb-20 min-h-screen bg-gray-50">
+    <div>
       <Container>
         <div className="py-4 space-y-6">
           <div>

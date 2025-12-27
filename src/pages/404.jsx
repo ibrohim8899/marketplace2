@@ -89,16 +89,6 @@ export default function NotFound() {
           <span className="text-sm font-medium">Orqaga qaytish</span>
         </button>
 
-        {/* Pastki qism */}
-        <div className="mt-12 pt-6 border-t border-purple-100">
-          <p className="text-xs md:text-sm text-gray-500">
-            Yordam kerakmi?{' '}
-            <Link to="/contact" className="text-purple-600 hover:text-pink-600 font-medium hover:underline transition-colors">
-              Qo'llab-quvvatlash xizmati
-            </Link>
-            {' '}bilan bog'laning
-          </p>
-        </div>
       </div>
 
       {/* CSS Animatsiyalar */}

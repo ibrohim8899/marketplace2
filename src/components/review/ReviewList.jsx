@@ -12,6 +12,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
   const [editingId, setEditingId] = useState(null);
   const [editingText, setEditingText] = useState('');
   const [actionLoadingId, setActionLoadingId] = useState(null);
+  const [expandedIds, setExpandedIds] = useState([]);
   const { showNotification } = useNotification();
 
   const fetchComments = async () => {
@@ -70,6 +71,12 @@ export default function ReviewList({ productId, onCommentDeleted }) {
     return candidateIds
       .filter(Boolean)
       .some((val) => String(val) === String(currentUserId));
+  };
+
+  const toggleExpand = (id) => {
+    setExpandedIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
   };
 
   const handleDelete = async (comment) => {
@@ -166,6 +173,8 @@ export default function ReviewList({ productId, onCommentDeleted }) {
           const displayText = isEditing
             ? editingText
             : (comment.body || comment.text || comment.comment);
+          const isExpanded = expandedIds.includes(commentId);
+          const shouldClamp = !isEditing && displayText && displayText.length > 200;
 
           return (
             <div
@@ -257,7 +266,24 @@ export default function ReviewList({ productId, onCommentDeleted }) {
                   rows={3}
                 />
               ) : (
-                <p className="text-gray-700 leading-relaxed">{displayText}</p>
+                <>
+                  <p
+                    className={`text-gray-700 leading-relaxed break-words ${
+                      !isExpanded && shouldClamp ? 'line-clamp-2' : ''
+                    }`}
+                  >
+                    {displayText}
+                  </p>
+                  {shouldClamp && (
+                    <button
+                      type="button"
+                      onClick={() => toggleExpand(commentId)}
+                      className="mt-1 text-xs font-medium text-blue-600 hover:underline"
+                    >
+                      {isExpanded ? 'Kamroq ko\'rsatish' : 'Ko\'proq o\'qish'}
+                    </button>
+                  )}
+                </>
               )}
             </div>
           );

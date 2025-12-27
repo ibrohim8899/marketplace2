@@ -25,6 +25,7 @@ import {
   MapPin, // Qo‘shimcha: location uchun
   AlertCircle, // Qo‘shimcha: status uchun
   Calendar, // Qo‘shimcha: created_at uchun
+  User,
 } from "lucide-react";
 
 export default function ProductDetailPage() {
@@ -69,6 +70,13 @@ export default function ProductDetailPage() {
 
   const hasMultipleImages = images.length > 1;
   const productId = product.uid || product.id;
+  const ownerDisplay =
+    product.owner_name ||
+    product.owner_full_name ||
+    product.owner_username ||
+    product.owner?.name ||
+    product.owner?.username ||
+    "Ma'lumot yo'q";
 
   const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % images.length);
   const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
@@ -79,7 +87,7 @@ export default function ProductDetailPage() {
   const handleToggleWishlist = () => toggleWishlist(product);
 
   return (
-    <div className="pb-20 min-h-screen">
+    <div className="min-h-[calc(100vh-80px)] bg-gray-50 pb-20">
       {/* RASMLAR GALEREYASI */}
       <div className="relative bg-white">
         <div className="relative group cursor-pointer" onClick={handleImageClick}>
@@ -183,9 +191,16 @@ export default function ProductDetailPage() {
           {product.description || "Tavsif mavjud emas"}
         </p>
 
-        {/* Qo‘shimcha backend ma’lumotlari (location, status, created_at) */}
+        {/* Qo‘shimcha backend ma’lumotlari (location, status, created_at, seller) */}
         <div className="space-y-4 mt-8 pt-8 border-t">
           <h2 className="text-xl font-bold text-gray-800">Qo‘shimcha ma’lumotlar</h2>
+
+          <div className="flex items-center gap-3 text-gray-600">
+            <User className="w-5 h-5 text-indigo-500" />
+            <span>
+              Sotuvchi: {ownerDisplay}
+            </span>
+          </div>
 
           <div className="flex items-center gap-3 text-gray-600">
             <MapPin className="w-5 h-5 text-blue-500" />
@@ -266,7 +281,7 @@ export default function ProductDetailPage() {
         initialIndex={currentImageIndex}
       />
 
-      <style jsx>{`
+      <style>{`
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>

@@ -8,16 +8,16 @@ export default function Wishlist() {
 
   if (wishlist.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 pt-16 pb-20 bg-gray-50">
-        <div className="text-center space-y-6">
-          <div className="w-32 h-32 mx-auto bg-gradient-to-br from-pink-100 to-red-100 rounded-full flex items-center justify-center">
-            <Heart className="w-16 h-16 text-red-400" />
+      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-8 bg-gray-50">
+        <div className="text-center space-y-5">
+          <div className="w-24 h-24 mx-auto bg-gradient-to-br from-pink-100 to-red-100 rounded-full flex items-center justify-center">
+            <Heart className="w-12 h-12 text-red-400" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">Sevimlilar bo'sh</h2>
-          <p className="text-gray-600">Yoqtirgan mahsulotlaringizni saqlab qo'ying!</p>
+          <h2 className="text-xl font-semibold text-gray-800">Sevimlilar bo'sh</h2>
+          <p className="text-gray-600 text-sm">Yoqtirgan mahsulotlaringizni saqlab qo'ying!</p>
           <Link 
             to="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
           >
             <ArrowLeft className="w-5 h-5" />
             Mahsulotlarni ko'rish
@@ -28,7 +28,7 @@ export default function Wishlist() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-16 pb-20">
+    <div>
       <div className="max-w-screen-md mx-auto px-4 py-4">
         <div className="flex items-center gap-3 mb-4">
           <Heart className="w-8 h-8 text-red-500 fill-current" />

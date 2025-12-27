@@ -48,8 +48,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div className="bg-gray-50 flex items-center justify-center px-3 py-4">
+      <div className="w-full max-w-sm">
         {/* Orqaga qaytish tugmasi */}
         <Link
           to="/"
@@ -60,18 +60,18 @@ export default function LoginPage() {
         </Link>
 
         {/* Login karta */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6 text-center">
-            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4">
-              <LogIn className="w-8 h-8 text-blue-600" />
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-center">
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2">
+              <LogIn className="w-6 h-6 text-blue-600" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Tizimga kirish</h1>
-            <p className="text-blue-100 text-sm mt-2">Barcha imkoniyatlardan foydalanish uchun</p>
+            <h1 className="text-lg font-semibold text-white">Tizimga kirish</h1>
+            <p className="text-blue-100 text-[11px] mt-0.5">Barcha imkoniyatlardan foydalanish uchun</p>
           </div>
 
           {/* Form */}
-          <div className="px-8 py-6">
+          <div className="px-5 py-4">
             {error && (
               <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
                 {error}
@@ -90,7 +90,7 @@ export default function LoginPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  className="w-full px-3.5 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
                   placeholder="example@email.com"
                   required
                 />
@@ -108,7 +108,7 @@ export default function LoginPage() {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    className="w-full px-3.5 py-2 pr-9 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm"
                     placeholder="••••••••"
                     required
                   />
@@ -126,7 +126,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 rounded-lg hover:shadow-lg transform hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
               >
                 {loading ? (
                   <>
@@ -142,14 +142,6 @@ export default function LoginPage() {
               </button>
             </form>
 
-            {/* Test ma'lumotlari */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <p className="text-xs text-blue-700 font-medium mb-2">Test ma'lumotlari:</p>
-              <div className="text-xs text-blue-600 space-y-1">
-                <p><strong>Email:</strong> ibrohim@gmail.com</p>
-                <p><strong>Parol:</strong> i9i9i9i9</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
