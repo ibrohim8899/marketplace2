@@ -3,9 +3,11 @@ import { useLocation } from 'react-router-dom';
 import ProductList from '../components/product/ProductList';
 import Container from '../components/layout/Container';
 import SearchFilter from '../components/product/SearchFilter';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SearchResults() {
   const location = useLocation();
+
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get('q') || '';
   const categoryFilter = params.get('category') || '';
@@ -13,6 +15,7 @@ export default function SearchResults() {
   const max = params.get('max');
   const locationFilter = params.get('location') || '';
   const priceRange = min && max ? { min: Number(min), max: Number(max) } : null;
+  const { t } = useLanguage();
 
   return (
     <div>
@@ -21,13 +24,13 @@ export default function SearchResults() {
           {/* Qidiruv sarlavhasi va izoh */}
           <div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              Qidiruv natijalari
+              {t('search_results_title')}
             </h1>
           </div>
 
           {/* Qidiruv va filter paneli */}
           <div className="space-y-4">
-            <div className="w-full bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl shadow-sm px-4 sm:px-6 py-3.5 sm:py-4 flex items-center gap-3">
+            <div className="w-full bg-gray-50 border border-slate-200 rounded-2xl shadow-sm px-4 sm:px-6 py-3.5 sm:py-4 flex items-center gap-3">
               <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 mr-1">
                 <svg
                   className="w-4 h-4"
@@ -46,14 +49,14 @@ export default function SearchResults() {
               </span>
               <div className="flex-1 min-w-0">
                 <p className="text-xs uppercase tracking-wide text-gray-400 mb-0.5">
-                  Qidiruv so'zi
+                  {t('search_query_label')}
                 </p>
                 <p className="text-sm sm:text-base font-medium text-gray-900 truncate">
-                  {searchQuery || 'Barcha mahsulotlar'}
+                  {searchQuery || t('search_query_all_products')}
                 </p>
               </div>
-              <span className="hidden sm:inline-flex text-xs font-medium text-gray-500 px-3 py-1 rounded-full bg-slate-100">
-                Natijalar ro'yxati quyida
+              <span className="hidden sm:inline-flex text-xs font-medium text-gray-500 px-3 py-1 rounded-full bg-gray-100">
+                {t('search_results_hint')}
               </span>
             </div>
 

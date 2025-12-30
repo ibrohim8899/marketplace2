@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import ProductCard from './ProductCard';
 import useInfiniteProducts from '../../hooks/useInfiniteProducts';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function ProductList({ category, categoryFilter, searchQuery, priceRange, locationFilter }) {
   const { products, loading, hasMore, loadMore, error } = useInfiniteProducts({ 
@@ -11,6 +12,8 @@ export default function ProductList({ category, categoryFilter, searchQuery, pri
     priceRange,
     locationFilter,
   });
+
+  const { t } = useLanguage();
 
   const { ref, inView } = useInView({
     threshold: 0.1,
@@ -45,7 +48,7 @@ export default function ProductList({ category, categoryFilter, searchQuery, pri
 
       {!loading && safeProducts.length === 0 && (
         <div className="col-span-full text-center py-20 text-gray-500 text-lg">
-          Bu filtr bo‘yicha tovar topilmadi
+          {t('productlist_no_results')}
         </div>
       )}
     </div>

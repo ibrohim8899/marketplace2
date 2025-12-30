@@ -1,15 +1,80 @@
 // src/components/layout/Navbar.jsx
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Moon, Sun, ChevronDown } from 'lucide-react';
+import { useTheme } from '../../context/ThemeContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function Navbar() {
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === 'dark';
+  const { lang, setLang, t } = useLanguage();
+  const [open, setOpen] = useState(false);
+
+  const languages = [
+    { code: 'uz', label: "O'zbek" },
+    { code: 'ru', label: 'Русский' },
+    { code: 'en', label: 'English' },
+  ];
+
+  const current = languages.find((item) => item.code === lang) || languages[0];
+
+  const handleSelect = (code) => {
+    setLang(code);
+    setOpen(false);
+  };
+
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white z-20">
+    <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-20 transition-colors duration-300">
       <div className="max-w-screen-md mx-auto px-4 py-3 flex justify-between items-center">
         <Link to="/" className="text-xl font-bold text-blue-600">M</Link>
 
-        <div className="flex gap-6 text-sm font-medium">
-          <Link to="/seller" className="hover:text-blue-600">Sotuvchi</Link>
+        <div className="flex items-center gap-4 text-sm font-medium">
+          <Link to="/seller" className="hover:text-blue-600">{t('nav_seller')}</Link>
           {/* <Link to="/top-sellers" className="hover:text-blue-600">Top Sotuvchilar</Link> */}
+
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setOpen((prev) => !prev)}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition-all duration-150"
+            >
+              <span className="text-xs font-medium">{current.label}</span>
+              <ChevronDown
+                className={`w-3 h-3 transition-transform duration-150 ${open ? 'rotate-180' : ''}`}
+              />
+            </button>
+
+            <div
+              className={`absolute right-0 mt-2 w-32 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden transition-all duration-150 origin-top-right ${
+                open ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'
+              }`}
+            >
+              {languages.map((item) => (
+                <button
+                  key={item.code}
+                  type="button"
+                  onClick={() => handleSelect(item.code)}
+                  className={`w-full text-left px-3 py-1.5 text-xs transition-colors ${
+                    lang === item.code
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={toggleTheme}
+            className="p-2 rounded-full border border-gray-200 bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200"
+            aria-label={t('nav_toggle_theme')}
+          >
+            {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
         </div>
       </div>
     </nav>

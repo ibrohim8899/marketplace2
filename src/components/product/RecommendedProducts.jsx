@@ -2,10 +2,12 @@
 import { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
 import { getProducts } from '../../api/products';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function RecommendedProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchRecommended = async () => {
@@ -40,7 +42,7 @@ export default function RecommendedProducts() {
   }
 
   if (products.length === 0) {
-    return <div className="text-center py-12 text-gray-500">Tavsiya yo‘q</div>;
+    return <div className="text-center py-12 text-gray-500">{t('recommended_empty')}</div>;
   }
 
   return (

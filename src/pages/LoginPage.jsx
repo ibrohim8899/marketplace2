@@ -3,9 +3,11 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, LogIn, ArrowLeft } from 'lucide-react';
 import { loginUser } from '../api/auth';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -24,7 +26,7 @@ export default function LoginPage() {
     e.preventDefault();
     
     if (!formData.email || !formData.password) {
-      setError('Barcha maydonlarni to\'ldiring!');
+      setError(t('login_error_required'));
       return;
     }
 
@@ -38,10 +40,10 @@ export default function LoginPage() {
         // Login muvaffaqiyatli bo'lsa, profilga qaytish
         navigate('/profile');
       } else {
-        setError('Login yoki parol xato!');
+        setError(t('login_error_invalid'));
       }
     } catch (err) {
-      setError('Xatolik: ' + (err.response?.data?.detail || err.message));
+      setError(t('login_error_generic_prefix') + (err.response?.data?.detail || err.message));
     } finally {
       setLoading(false);
     }
@@ -56,7 +58,7 @@ export default function LoginPage() {
           className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-800 mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          Orqaga qaytish
+          {t('login_back')}
         </Link>
 
         {/* Login karta */}
@@ -66,8 +68,8 @@ export default function LoginPage() {
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2">
               <LogIn className="w-6 h-6 text-blue-600" />
             </div>
-            <h1 className="text-lg font-semibold text-white">Tizimga kirish</h1>
-            <p className="text-blue-100 text-[11px] mt-0.5">Barcha imkoniyatlardan foydalanish uchun</p>
+            <h1 className="text-lg font-semibold text-white">{t('login_title')}</h1>
+            <p className="text-blue-100 text-[11px] mt-0.5">{t('login_subtitle')}</p>
           </div>
 
           {/* Form */}
@@ -99,7 +101,7 @@ export default function LoginPage() {
               {/* Parol */}
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Parol
+                  {t('login_password_label')}
                 </label>
                 <div className="relative">
                   <input
@@ -131,12 +133,12 @@ export default function LoginPage() {
                 {loading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Kirilmoqda...
+                    {t('login_loading')}
                   </>
                 ) : (
                   <>
                     <LogIn className="w-5 h-5" />
-                    Kirish
+                    {t('login_submit')}
                   </>
                 )}
               </button>

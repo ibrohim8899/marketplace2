@@ -321,7 +321,7 @@ export default function CategorySlider() {
           <Link
             key={cat.uid}
             to={`/category/${cat.uid}`} // UID bo‘yicha, "all" uchun /category/all
-            className="min-w-max px-3 py-2 bg-white rounded-lg shadow text-xs font-medium cursor-pointer hover:bg-gray-100 capitalize"
+            className="min-w-max px-3 py-2 bg-white rounded-lg shadow text-xs font-medium cursor-pointer hover:bg-gray-100 capitalize border border-gray-200 hover:border-gray-300"
           >
             {cat.name}
           </Link>

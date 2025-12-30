@@ -78,10 +78,10 @@ export default function ProductCard({ product, loading = false }) {
         {/* Sevimlilar tugmasi */}
         <button
           onClick={handleToggleWishlist}
-          className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+          className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 border ${
             inWishlist
-              ? "bg-red-500 text-white"
-              : "bg-white/90 backdrop-blur-sm text-gray-600 hover:bg-red-500 hover:text-white"
+              ? "bg-red-500 text-white border-red-500"
+              : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-red-500 hover:text-white hover:border-red-500"
           }`}
         >
           <Heart

@@ -3,9 +3,11 @@
 import { NavLink } from 'react-router-dom';
 import { HomeIcon, Search, CircleUserRound, ShoppingCart, Heart } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function Footer() {
   const { getTotalItems, wishlist } = useCart();
+  const { t } = useLanguage();
   const cartCount = getTotalItems();
   const wishlistCount = wishlist.length;
 
@@ -13,7 +15,7 @@ export default function Footer() {
   const defaultClass = "text-gray-600";
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-20">
+    <footer className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-20 transition-colors duration-300">
       <div className="max-w-screen-md mx-auto px-2 py-2">
         <div className="flex justify-around items-center">
           {/* Bosh sahifa */}
@@ -26,7 +28,7 @@ export default function Footer() {
             }
           >
             <HomeIcon className="w-6 h-6" />
-            <span className="text-xs font-medium">Bosh</span>
+            <span className="text-xs font-medium">{t('footer_home')}</span>
           </NavLink>
 
           {/* Qidiruv */}
@@ -39,7 +41,7 @@ export default function Footer() {
             }
           >
             <Search className="w-6 h-6" />
-            <span className="text-xs font-medium">Qidiruv</span>
+            <span className="text-xs font-medium">{t('footer_search')}</span>
           </NavLink>
 
           {/* Sevimlilar */}
@@ -59,7 +61,7 @@ export default function Footer() {
                 </span>
               )}
             </div>
-            <span className="text-xs font-medium">Sevimli</span>
+            <span className="text-xs font-medium">{t('footer_wishlist')}</span>
           </NavLink>
 
           {/* Savatcha */}
@@ -92,7 +94,7 @@ export default function Footer() {
             }
           >
             <CircleUserRound className="w-6 h-6" />
-            <span className="text-xs font-medium">Profil</span>
+            <span className="text-xs font-medium">{t('footer_profile')}</span>
           </NavLink>
         </div>
       </div>

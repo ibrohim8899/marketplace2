@@ -159,7 +159,7 @@ export default function Breadcrumb() {
           <li className="flex items-center flex-shrink-0">
             <Link
               to="/"
-              className="flex items-center gap-1.5 px-2 py-1 rounded-full text-gray-600 hover:text-blue-600 hover:bg-white transition-all duration-200 font-medium group border border-transparent hover:border-blue-100"
+              className="flex items-center gap-1.5 px-2 py-1 rounded-full text-gray-600 hover:text-blue-600 transition-all duration-200 font-medium group border border-gray-200 hover:bg-gray-100 hover:border-blue-300"
             >
               <Home className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
               <span className="text-[11px]">Bosh sahifa</span>
@@ -177,13 +177,13 @@ export default function Breadcrumb() {
               <li key={index} className="flex items-center flex-shrink-0">
                 <ChevronRight className="w-3 h-3 text-gray-400 mx-0.5 flex-shrink-0" />
                 {isLast ? (
-                  <span className="text-[11px] text-gray-900 font-semibold px-2.5 py-1 bg-white rounded-full border border-gray-200">
+                  <span className="text-[11px] text-gray-900 font-semibold px-2.5 py-1 bg-gray-50 rounded-full border border-gray-200">
                     {displayName}
                   </span>
                 ) : (
                   <Link
                     to={linkTo}
-                    className="text-[11px] text-gray-600 hover:text-blue-600 transition-all duration-200 font-medium px-2 py-1 rounded-full hover:bg-white border border-transparent hover:border-blue-100"
+                    className="text-[11px] text-gray-600 hover:text-blue-600 transition-all duration-200 font-medium px-2 py-1 rounded-full border border-gray-200 hover:bg-gray-100 hover:border-blue-300"
                   >
                     {displayName}
                   </Link>
