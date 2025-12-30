@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
+
 import {
   Mail,
   Phone,
@@ -14,10 +16,10 @@ import {
 } from "lucide-react";
 import axiosInstance from "../api/axiosInstance";
 
-const formatDate = (value) => {
-  if (!value) return "Ma'lumot yo'q";
+const formatDate = (value, locale = "uz-UZ") => {
+  if (!value) return "";
   try {
-    return new Date(value).toLocaleString("uz-UZ", {
+    return new Date(value).toLocaleString(locale, {
       day: "2-digit",
       month: "short",
       year: "numeric",
@@ -35,12 +37,20 @@ export default function ProfileCard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [hasToken, setHasToken] = useState(false);
+  const { t, lang } = useLanguage();
+
+  const localeMap = {
+    uz: "uz-UZ",
+    ru: "ru-RU",
+    en: "en-US",
+  };
+  const currentLocale = localeMap[lang] || "uz-UZ";
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (!token) {
       setHasToken(false);
-      setError("Profil ma'lumotlarini ko'rish uchun tizimga kiring.");
+      setError(t("profile_login_required"));
       setLoading(false);
       return;
     }
@@ -52,7 +62,7 @@ export default function ProfileCard() {
         setProfile(data);
       } catch (err) {
         console.error("Profilni yuklashda xatolik:", err.response?.data || err.message);
-        const detail = err.response?.data?.detail || "Profilni yuklab bo'lmadi.";
+        const detail = err.response?.data?.detail || t("profile_load_failed");
         setError(detail);
         if (err.response?.status === 401) {
           setHasToken(false);
@@ -63,7 +73,7 @@ export default function ProfileCard() {
     };
 
     fetchProfile();
-  }, []);
+  }, [t]);
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
@@ -83,17 +93,18 @@ export default function ProfileCard() {
         <User className="w-8 h-8" />
       </div>
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">Profil ma'lumotlari mavjud emas</h2>
+        <h2 className="text-lg font-semibold text-gray-900">{t("profile_empty_title")}</h2>
         <p className="text-gray-500 text-sm mt-1">
-          {error || "Ilova imkoniyatlaridan foydalanish uchun tizimga kiring."}
+          {error || t("profile_empty_desc")}
         </p>
       </div>
+
       <button
         onClick={handleLogin}
         className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
       >
         <LogIn className="w-5 h-5" />
-        Kirish sahifasiga o'tish
+        {t("profile_go_login_button")}
       </button>
     </div>
   );
@@ -103,7 +114,7 @@ export default function ProfileCard() {
       <div className="min-h-[calc(100vh-80px)] bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3 text-indigo-600">
           <Loader2 className="w-10 h-10 animate-spin" />
-          <p className="text-sm font-medium">Profil ma'lumotlari yuklanmoqda...</p>
+          <p className="text-sm font-medium">{t("profile_loading")}</p>
         </div>
       </div>
     );
@@ -127,10 +138,25 @@ export default function ProfileCard() {
     : profile.email?.[0]?.toUpperCase() || "U";
 
   const infoItems = [
-    { label: "Email", value: profile.email, icon: Mail, accent: "text-indigo-600" },
-    { label: "Telefon", value: profile.phone_number || "Ma'lumot yo'q", icon: Phone, accent: "text-emerald-600" },
-    { label: "Foydalanuvchi nomi", value: profile.username || "Ma'lumot yo'q", icon: User, accent: "text-slate-600" },
-    { label: "Role", value: profile.role || "Aniqlanmagan", icon: ShieldCheck, accent: "text-purple-600" },
+    { label: t("profile_label_email"), value: profile.email, icon: Mail, accent: "text-indigo-600" },
+    {
+      label: t("profile_label_phone"),
+      value: profile.phone_number || t("common_no_data"),
+      icon: Phone,
+      accent: "text-emerald-600",
+    },
+    {
+      label: t("profile_label_username"),
+      value: profile.username || t("common_no_data"),
+      icon: User,
+      accent: "text-slate-600",
+    },
+    {
+      label: t("profile_label_role"),
+      value: profile.role || t("profile_role_unknown"),
+      icon: ShieldCheck,
+      accent: "text-purple-600",
+    },
   ];
 
   return (
@@ -145,7 +171,8 @@ export default function ProfileCard() {
 
               <div className="flex-1 space-y-3">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-white">{profile.name || "Ism ko'rsatilmagan"}</h1>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-white">{profile.name || t("profile_name_fallback")}</h1>
+
                   {profile.role && (
                     <span className="px-3 py-1 rounded-full bg-white/15 text-sm font-semibold">
                       {profile.role.toUpperCase()}
@@ -158,11 +185,11 @@ export default function ProfileCard() {
                         : "bg-rose-500/20 text-rose-100"
                     }`}
                   >
-                    {profile.is_active ? "Faol foydalanuvchi" : "Nofaol"}
+                    {profile.is_active ? t("profile_status_active") : t("profile_status_inactive")}
                   </span>
                 </div>
                 <p className="text-white/80 text-sm">
-                  Oxirgi faoliyat: {formatDate(profile.last_login_at)}
+                  {t("profile_last_activity_label")} {profile.last_login_at ? formatDate(profile.last_login_at, currentLocale) : t("common_no_data")}
                 </p>
               </div>
             </div>
@@ -177,7 +204,7 @@ export default function ProfileCard() {
                     {label}
                   </p>
                   <p className="mt-2 text-base font-semibold text-gray-900 break-words">
-                    {value || "Ma'lumot yo'q"}
+                    {value || t("common_no_data")}
                   </p>
                 </div>
               ))}
@@ -185,20 +212,23 @@ export default function ProfileCard() {
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="rounded-2xl border border-gray-100 p-4 sm:p-5 bg-white">
-                <p className="text-xs uppercase tracking-wide text-gray-500">Ro'yxatdan o'tgan vaqt</p>
-                <p className="mt-2 text-base sm:text-lg font-semibold text-gray-900">{formatDate(profile.created_at)}</p>
+                <p className="text-xs uppercase tracking-wide text-gray-500">{t("profile_registered_at")}</p>
+                <p className="mt-2 text-base sm:text-lg font-semibold text-gray-900">
+                  {profile.created_at ? formatDate(profile.created_at, currentLocale) : t("common_no_data")}
+                </p>
               </div>
               <div className="rounded-2xl border border-gray-100 p-4 sm:p-5 bg-white">
-                <p className="text-xs uppercase tracking-wide text-gray-500">Telegram ID</p>
+                <p className="text-xs uppercase tracking-wide text-gray-500">{t("profile_telegram_id")}</p>
                 <p className="mt-2 text-base sm:text-lg font-semibold text-gray-900">
-                  {profile.telegram_id || "Ma'lumot yo'q"}
+                  {profile.telegram_id || t("common_no_data")}
                 </p>
               </div>
             </div>
 
             {profile.location || profile.address || profile.website ? (
               <div className="rounded-3xl border border-dashed border-indigo-100 bg-indigo-50/60 p-5 sm:p-6">
-                <h3 className="text-sm font-semibold text-indigo-900 mb-4">Qo'shimcha ma'lumotlar</h3>
+                <h3 className="text-sm font-semibold text-indigo-900 mb-4">{t("profile_extra_info_title")}</h3>
+
                 <div className="space-y-3 text-sm text-indigo-900/90">
                   {profile.location && (
                     <div className="flex items-center gap-2">
@@ -237,7 +267,7 @@ export default function ProfileCard() {
             className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-3 rounded-2xl shadow-lg flex items-center justify-center gap-2 hover:shadow-rose-500/40 transition-all"
           >
             <LogOut className="w-5 h-5" />
-            Chiqish
+            {t("profile_logout")}
           </button>
         </div>
       </div>
