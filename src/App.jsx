@@ -32,6 +32,8 @@ export default function App() {
           return;
         }
 
+        let urlPhoneNumber = null;
+
         try {
           const url = new URL(window.location.href);
           const urlAccessToken =
@@ -41,6 +43,11 @@ export default function App() {
           const urlRefreshToken =
             url.searchParams.get('refresh_token') ||
             url.searchParams.get('refresh');
+
+          urlPhoneNumber =
+            url.searchParams.get('phone_number') ||
+            url.searchParams.get('phone') ||
+            url.searchParams.get('tg_phone');
 
           if (urlAccessToken) {
             const applied = await applyTokensFromUrl({
@@ -118,6 +125,10 @@ export default function App() {
         auth_date: authDate,
         hash,
       };
+
+      if (urlPhoneNumber) {
+        telegramData.phone_number = urlPhoneNumber;
+      }
 
       console.log("[Telegram] Auto login urinyapti", telegramData);
 
