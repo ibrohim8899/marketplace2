@@ -4,6 +4,7 @@ import { getComments, deleteComment, updateComment } from '../../api/comments';
 import axiosInstance from '../../api/axiosInstance';
 import { useNotification } from '../../context/NotificationContext';
 import { Trash2, Edit2, Check, X } from 'lucide-react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function ReviewList({ productId, onCommentDeleted }) {
   const [comments, setComments] = useState([]);
@@ -14,6 +15,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
   const [actionLoadingId, setActionLoadingId] = useState(null);
   const [expandedIds, setExpandedIds] = useState([]);
   const { showNotification } = useNotification();
+  const { t } = useLanguage();
 
   const fetchComments = async () => {
     setLoading(true);
@@ -88,8 +90,8 @@ export default function ReviewList({ productId, onCommentDeleted }) {
       await deleteComment(id);
       showNotification({
         type: 'success',
-        title: "Sharh o'chirildi",
-        message: "Sharhingiz muvaffaqiyatli o'chirildi.",
+        title: t('review_delete_success_title'),
+        message: t('review_delete_success_message'),
       });
       await fetchComments();
       if (onCommentDeleted) onCommentDeleted();
@@ -99,7 +101,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
         (typeof err.response?.data === 'string' ? err.response.data : err.message);
       showNotification({
         type: 'error',
-        title: "Sharh o'chirilmadi",
+        title: t('review_delete_fail_title'),
         message: detail,
       });
     } finally {
@@ -127,8 +129,8 @@ export default function ReviewList({ productId, onCommentDeleted }) {
     if (!editingText.trim()) {
       showNotification({
         type: 'warning',
-        title: "Matn bo'sh",
-        message: 'Sharh matnini kiriting.',
+        title: t('review_update_empty_title'),
+        message: t('review_update_empty_message'),
       });
       return;
     }
@@ -138,8 +140,8 @@ export default function ReviewList({ productId, onCommentDeleted }) {
       await updateComment(id, editingText.trim());
       showNotification({
         type: 'success',
-        title: 'Sharh yangilandi',
-        message: 'Sharhingiz muvaffaqiyatli yangilandi.',
+        title: t('review_update_success_title'),
+        message: t('review_update_success_message'),
       });
       setEditingId(null);
       setEditingText('');
@@ -150,7 +152,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
         (typeof err.response?.data === 'string' ? err.response.data : err.message);
       showNotification({
         type: 'error',
-        title: 'Sharh yangilanmadi',
+        title: t('review_update_fail_title'),
         message: detail,
       });
     } finally {
@@ -158,12 +160,12 @@ export default function ReviewList({ productId, onCommentDeleted }) {
     }
   };
 
-  if (loading) return <p className="text-center text-gray-500">Yuklanyapti...</p>;
+  if (loading) return <p className="text-center text-gray-500">{t('review_loading')}</p>;
 
   return (
     <div className="space-y-4">
       {comments.length === 0 ? (
-        <p className="text-center text-gray-500 py-8">Hali sharhlar yo'q</p>
+        <p className="text-center text-gray-500 py-8">{t('review_empty')}</p>
       ) : (
         comments.map((comment) => {
           const commentId = comment.uid || comment.id;
@@ -280,7 +282,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
                       onClick={() => toggleExpand(commentId)}
                       className="mt-1 text-xs font-medium text-blue-600 hover:underline"
                     >
-                      {isExpanded ? 'Kamroq ko\'rsatish' : 'Ko\'proq o\'qish'}
+                      {isExpanded ? t('review_show_less') : t('review_show_more')}
                     </button>
                   )}
                 </>

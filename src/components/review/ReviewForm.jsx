@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Button from '../ui/Button';
 import { createComment } from '../../api/comments';
 import { useNotification } from '../../context/NotificationContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function ReviewForm({ productId, onAdded }) {
   const [rating, setRating] = useState(5);
@@ -10,22 +11,23 @@ export default function ReviewForm({ productId, onAdded }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { showNotification } = useNotification();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!comment.trim()) {
-      setError('Sharh yozing!');
+      setError(t('review_error_empty'));
       return;
     }
 
     const token = localStorage.getItem('access_token');
     if (!token) {
-      const msg = "Sharh yozish uchun tizimga kiring!";
+      const msg = t('review_login_required');
       setError(msg);
       showNotification({
         type: 'warning',
-        title: 'Tizimga kiring',
+        title: t('review_login_required_title'),
         message: msg,
       });
       return;
@@ -42,8 +44,8 @@ export default function ReviewForm({ productId, onAdded }) {
 
       showNotification({
         type: 'success',
-        title: 'Sharh yuborildi',
-        message: 'Sharhingiz muvaffaqiyatli saqlandi.',
+        title: t('review_sent_title'),
+        message: t('review_sent_message'),
       });
     } catch (err) {
       const detail =
@@ -51,11 +53,11 @@ export default function ReviewForm({ productId, onAdded }) {
         (typeof err.response?.data === 'string'
           ? err.response.data
           : err.message);
-      const msg = "Sharh qo'shishda xatolik: " + detail;
+      const msg = t('review_error_prefix') + detail;
       setError(msg);
       showNotification({
         type: 'error',
-        title: 'Sharh yuborilmadi',
+        title: t('review_error_title'),
         message: detail,
       });
     } finally {
@@ -81,7 +83,7 @@ export default function ReviewForm({ productId, onAdded }) {
       </div>
       
       <textarea
-        placeholder="Sharh yozing..."
+        placeholder={t('review_placeholder')}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
         className="border border-gray-300 rounded-lg py-2 px-3 w-full h-20 focus:ring-2 focus:ring-blue-500 resize-none"
@@ -92,7 +94,7 @@ export default function ReviewForm({ productId, onAdded }) {
         className="w-full"
         disabled={loading}
       >
-        {loading ? 'Yuborilmoqda...' : 'Yuborish'}
+        {loading ? t('review_submit_loading') : t('review_submit')}
       </Button>
     </form>
   );
