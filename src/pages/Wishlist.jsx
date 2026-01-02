@@ -2,9 +2,11 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Heart, Trash2, ArrowLeft } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Wishlist() {
   const { wishlist, toggleWishlist, isInCart } = useCart();
+  const { t } = useLanguage();
 
   if (wishlist.length === 0) {
     return (
@@ -13,14 +15,14 @@ export default function Wishlist() {
           <div className="w-24 h-24 mx-auto bg-gradient-to-br from-pink-100 to-red-100 rounded-full flex items-center justify-center">
             <Heart className="w-12 h-12 text-red-400" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-800">Sevimlilar bo'sh</h2>
-          <p className="text-gray-600 text-sm">Yoqtirgan mahsulotlaringizni saqlab qo'ying!</p>
+          <h2 className="text-xl font-semibold text-gray-800">{t('wishlist_empty_title')}</h2>
+          <p className="text-gray-600 text-sm">{t('wishlist_empty_desc')}</p>
           <Link 
             to="/"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
           >
             <ArrowLeft className="w-5 h-5" />
-            Mahsulotlarni ko'rish
+            {t('view_products')}
           </Link>
         </div>
       </div>
@@ -33,7 +35,7 @@ export default function Wishlist() {
         <div className="flex items-center gap-3 mb-4">
           <Heart className="w-8 h-8 text-red-500 fill-current" />
           <h1 className="text-2xl font-bold text-gray-800">
-            Sevimlilar ({wishlist.length})
+            {t('wishlist_title')} ({wishlist.length})
           </h1>
         </div>
 
@@ -91,13 +93,13 @@ export default function Wishlist() {
                   <div className="flex items-center justify-between mt-2">
                     <div>
                       <p className="text-green-600 font-bold text-lg">
-                        {price > 0 ? `${price} so'm` : "Narxi yo'q"}
+                        {price > 0 ? `${price} ${t('currency_som')}` : t('common_no_data')}
                       </p>
 
                       <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
                         {product.rating && <span>⭐ {product.rating.toFixed(1)}</span>}
                         {(product.amount || product.stock) && (
-                          <span>{product.amount || product.stock} dona</span>
+                          <span>{product.amount || product.stock} {t('unit_piece')}</span>
                         )}
                       </div>
                     </div>

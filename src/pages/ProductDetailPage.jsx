@@ -11,6 +11,7 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import Badge from "../components/ui/Badge";
 import EmptyState from "../components/common/EmptyState";
 import ImageZoomModal from "../components/common/ImageZoomModal";
+import { useLanguage } from "../context/LanguageContext";
 
 import {
   ChevronLeft,
@@ -31,6 +32,7 @@ import {
 export default function ProductDetailPage() {
   const { uid } = useParams();
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const { addToCart, toggleWishlist, isInWishlist, isInCart } = useCart();
 
   const [product, setProduct] = useState(null);
@@ -58,7 +60,7 @@ export default function ProductDetailPage() {
   }, [uid, navigate]);
 
   if (loading) return <LoadingSpinner />;
-  if (!product) return <EmptyState message="Tovar topilmadi" />;
+  if (!product) return <EmptyState message={t('product_not_found')} />;
 
   // Backenddan 5 ta rasm olish (faqat mavjudlarini)
   const images = [];
@@ -76,7 +78,7 @@ export default function ProductDetailPage() {
     product.owner_username ||
     product.owner?.name ||
     product.owner?.username ||
-    "Ma'lumot yo'q";
+    t('not_available');
 
   const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % images.length);
   const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
@@ -100,7 +102,7 @@ export default function ProductDetailPage() {
 
           <div className="absolute top-4 right-4 bg-black/50 text-white px-3 py-2 rounded-lg flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
             <Maximize2 className="w-4 h-4" />
-            <span className="text-sm font-medium">Kattalashtirish</span>
+            <span className="text-sm font-medium">{t('zoom_in')}</span>
           </div>
 
           {hasMultipleImages && (
@@ -152,7 +154,7 @@ export default function ProductDetailPage() {
 
           <div className="flex items-center gap-6 flex-wrap">
             <p className="text-3xl font-bold text-green-600">
-              {(product.cost || product.price || 0).toLocaleString()} so'm
+              {(product.cost || product.price || 0).toLocaleString()} {t('currency_som')}
             </p>
 
             {product.discountPercentage > 0 && (
@@ -166,7 +168,7 @@ export default function ProductDetailPage() {
           <div className="flex flex-wrap items-center gap-4 text-sm">
             <Badge variant="secondary" className="flex items-center gap-1">
               <Package className="w-4 h-4" />
-              {product.category || "Kategoriya"}
+              {product.category || t('category_label')}
             </Badge>
 
             {(product.rating || product.rating === 0) && (
@@ -180,46 +182,46 @@ export default function ProductDetailPage() {
               <ShoppingCart className="w-4 h-4" />
               <span>
                 {product.stock > 0 || product.amount > 0
-                  ? `${product.stock || product.amount} dona qoldi`
-                  : "Tugagan"}
+                  ? `${product.stock || product.amount} ${t('unit_piece')} ${t('left')}`
+                  : t('out_of_stock')}
               </span>
             </div>
           </div>
         </div>
 
         <p className="text-gray-700 leading-relaxed text-base">
-          {product.description || "Tavsif mavjud emas"}
+          {product.description || t('description_not_available')}
         </p>
 
         {/* Qo‘shimcha backend ma’lumotlari (location, status, created_at, seller) */}
         <div className="space-y-4 mt-8 pt-8 border-t">
-          <h2 className="text-xl font-bold text-gray-800">Qo‘shimcha ma’lumotlar</h2>
+          <h2 className="text-xl font-bold text-gray-800">{t('additional_info')}</h2>
 
           <div className="flex items-center gap-3 text-gray-600">
             <User className="w-5 h-5 text-indigo-500" />
             <span>
-              Sotuvchi: {ownerDisplay}
+              {t('seller_label')}: {ownerDisplay}
             </span>
           </div>
 
           <div className="flex items-center gap-3 text-gray-600">
             <MapPin className="w-5 h-5 text-blue-500" />
             <span>
-              Joylashuv: {product.location || "Joylashuv mavjud emas"}
+              {t('location_label')}: {product.location || t('not_available')}
             </span>
           </div>
 
           <div className="flex items-center gap-3 text-gray-600">
             <AlertCircle className="w-5 h-5 text-green-500" />
             <span>
-              Holati: {product.status || "Holati mavjud emas"}
+              {t('status_label')}: {product.status || t('not_available')}
             </span>
           </div>
 
           <div className="flex items-center gap-3 text-gray-600">
             <Calendar className="w-5 h-5 text-purple-500" />
             <span>
-              Yaratilgan vaqt: {new Date(product.created_at).toLocaleString() || "Vaqt mavjud emas"}
+              {t('created_at_label')}: {product.created_at ? new Date(product.created_at).toLocaleString() : t('not_available')}
             </span>
           </div>
         </div>
@@ -252,14 +254,14 @@ export default function ProductDetailPage() {
               }`}
             />
             <span className="relative">
-              {isInWishlist(productId) ? "Sevimlilardan o'chirish" : "Sevimlilarga"}
+              {isInWishlist(productId) ? t('remove_from_wishlist') : t('add_to_wishlist')}
             </span>
           </Button>
         </div>
 
         {/* Sharhlar */}
         <div className="mt-10 pt-8 border-t">
-          <h2 className="text-2xl font-bold mb-6">Sharhlar</h2>
+          <h2 className="text-2xl font-bold mb-6">{t('reviews_title')}</h2>
           <ReviewForm 
             productId={uid} 
             onAdded={() => setRefreshComments(prev => prev + 1)}
