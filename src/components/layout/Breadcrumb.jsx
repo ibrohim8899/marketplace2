@@ -4,11 +4,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { ChevronRight, Home } from 'lucide-react';
 import { getProducts } from '../../api/products';
 import { getCategoryById } from '../../api/categories';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function Breadcrumb() {
   const location = useLocation();
   const [productName, setProductName] = useState('');
   const [categoryName, setCategoryName] = useState('');
+  const { t } = useLanguage();
 
   // Yo'lni bo'laklarga ajratish
   const pathnames = location.pathname.split('/').filter(x => x);
@@ -52,7 +54,7 @@ export default function Breadcrumb() {
 
         // Maxsus "all" kategoriyasi uchun oddiy nom
         if (categoryUid === 'all') {
-          setCategoryName('Barcha');
+          setCategoryName(t('breadcrumb_all'));
           return;
         }
 
@@ -65,7 +67,7 @@ export default function Breadcrumb() {
     };
 
     loadCategoryName();
-  }, [categoryUid]);
+  }, [categoryUid, t]);
 
   // Agar bosh sahifada bo'lsa, breadcrumb ko'rsatmaymiz
   if (pathnames.length === 0) {
@@ -85,12 +87,12 @@ export default function Breadcrumb() {
 
   // Sahifa nomlari
   const pageNames = {
-    'seller': 'Sotuvchi paneli',
-    'top-sellers': 'Top sotuvchilar',
-    'search': 'Qidiruv natijalari',
-    'profile': 'Profil',
-    'category': 'Kategoriya',
-    'product': 'Mahsulot',
+    'seller': t('breadcrumb_seller'),
+    'top-sellers': t('breadcrumb_top_sellers'),
+    'search': t('breadcrumb_search_results'),
+    'profile': t('breadcrumb_profile'),
+    'category': t('breadcrumb_category'),
+    'product': t('breadcrumb_product'),
   };
 
   // Har bir segment uchun nom va link yaratish
@@ -115,7 +117,7 @@ export default function Breadcrumb() {
     // Kategoriya parametri uchun
     else if (prevSegment === 'category') {
       if (categoryUid && segment === categoryUid) {
-        displayName = categoryName || 'Kategoriya';
+        displayName = categoryName || t('breadcrumb_category');
       } else {
         displayName = categoryNames[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
       }
@@ -124,7 +126,7 @@ export default function Breadcrumb() {
     }
     // Mahsulot UID uchun
     else if (prevSegment === 'product' && segment === productUid) {
-      displayName = productName || 'Mahsulot';
+      displayName = productName || t('breadcrumb_product');
       // Mahsulotga link - /product/:uid formatida
       linkTo = `/product/${segment}`;
     }
@@ -140,10 +142,10 @@ export default function Breadcrumb() {
     // Oxirgi bo'lak /product/:uid yoki /category/:uid bo'lsa, har doim nomni ishlatamiz
     const isLast = index === pathnames.length - 1;
     if (isLast && productUid && segment === productUid) {
-      displayName = productName || 'Mahsulot';
+      displayName = productName || t('breadcrumb_product');
       linkTo = `/product/${segment}`;
     } else if (isLast && categoryUid && segment === categoryUid) {
-      displayName = categoryName || 'Kategoriya';
+      displayName = categoryName || t('breadcrumb_category');
       linkTo = `/category/${segment}`;
     }
 
@@ -162,7 +164,7 @@ export default function Breadcrumb() {
               className="flex items-center gap-1.5 px-2 py-1 rounded-full text-gray-600 hover:text-blue-600 transition-all duration-200 font-medium group border border-gray-200 hover:bg-gray-100 hover:border-blue-300"
             >
               <Home className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-              <span className="text-[11px]">Bosh sahifa</span>
+              <span className="text-[11px]">{t('breadcrumb_home')}</span>
             </Link>
           </li>
           {/* Dinamik yo'l bo'laklari */}
