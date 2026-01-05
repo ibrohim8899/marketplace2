@@ -1,45 +1,4 @@
-// // src/hooks/useInfiniteProducts.js
-// import { useState, useEffect } from 'react';
-// import { getProducts, getProductsByCategory, searchProducts } from '../api/products';
 
-// export default function useInfiniteProducts({ category, searchQuery, priceRange }) {
-//   const [products, setProducts] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [hasMore, setHasMore] = useState(false); // Pagination yo'q, lekin agar kerak bo'lsa qoldirdim
-//   const [error, setError] = useState(null);
-
-//   useEffect(() => {
-//     const fetchProducts = async () => {
-//       setLoading(true);
-//       setError(null);
-//       try {
-//         let data = [];
-
-//         if (searchQuery) {
-//           const res = await searchProducts(searchQuery);
-//           data = res.results || res; // Oddiy holat
-//         } else if (category) {
-//           const res = await getProductsByCategory(category);
-//           data = Array.isArray(res.results) ? res.results : res.results?.products || res || [];
-//         } else {
-//           // Barcha tovarlar – maxsus parsing
-//           const res = await getProducts();
-//           data = res.results?.products || res.results || res || []; // Backend o'zgargan formatga mos
-//         }
-
-//         setProducts(Array.isArray(data) ? data : []);
-//         setHasMore(false); // Pagination yo'q
-//       } catch (err) {
-//         console.error("Xato:", err);
-//         setError("Tovarlar yuklanmadi");
-//         setProducts([]);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchProducts();
-//   }, [category, searchQuery, priceRange]);
 // src/hooks/useInfiniteProducts.js
 import { useState, useEffect } from 'react';
 import { getProducts, getProductsByCategory, searchProducts, filterProductsByCost, filterProductsByLocation } from '../api/products';
