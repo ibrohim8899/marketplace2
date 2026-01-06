@@ -15,7 +15,7 @@ import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
 import Navbar from './components/layout/Navbar'; // Agar yo'q bo'lsa, qo'shing
 import Footer from './components/layout/Footer'; // Agar yo'q bo'lsa, qo'shing
-import { loginWithTelegram, applyTokensFromUrl } from './api/auth';
+import { autoLoginWithTelegramId, applyTokensFromUrl } from './api/auth';
 
 export default function App() {
   useEffect(() => {
@@ -132,11 +132,15 @@ export default function App() {
 
       console.log("[Telegram] Auto login urinyapti", telegramData);
 
-      loginWithTelegram(telegramData)
+      autoLoginWithTelegramId(
+        telegramData.id || telegramData.user_id || telegramData.telegram_id,
+      )
         .then((result) => {
-          console.log("[Telegram] loginWithTelegram yakuni:", result);
+          console.log("[Telegram] autoLoginWithTelegramId yakuni:", result);
           if (!result) {
-            console.error("[Telegram] loginWithTelegram true qaytarmadi, access_token kelmadi.");
+            console.error(
+              "[Telegram] autoLoginWithTelegramId true qaytarmadi, access_token kelmadi.",
+            );
           }
         })
         .catch((error) => {

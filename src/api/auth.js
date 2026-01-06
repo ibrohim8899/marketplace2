@@ -74,6 +74,29 @@ export const loginWithTelegram = async (telegramData) => {
   }
 };
 
+export const autoLoginWithTelegramId = async (telegramId) => {
+  try {
+    if (!telegramId) {
+      console.warn("Telegram ID yo'q, auto-login bekor qilindi.");
+      return false;
+    }
+
+    const payload = {
+      telegram_id: telegramId,
+    };
+
+    const response = await axiosInstance.post("/test/test/", payload);
+
+    const data = response.data || {};
+
+    return handleAuthResponse(data);
+
+  } catch (error) {
+    console.error("Telegram ID orqali auto-login xatoligi:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const applyTokensFromUrl = async ({ access, refresh }) => {
   try {
     if (!access) {
