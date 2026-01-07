@@ -1,8 +1,27 @@
 // src/api/axiosInstance.js
 import axios from "axios";
 
+// Env'dan kelgan base URL ni normalizatsiya qilamiz, shunda har doim to'g'ri HTTP URL bo'ladi
+const rawBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+
+let baseURL;
+
+if (!rawBaseUrl) {
+  // Env bo'sh bo'lsa, development uchun lokal proxy yoki relative "/api" ishlatamiz
+  baseURL = "/api";
+} else if (rawBaseUrl.startsWith("http://") || rawBaseUrl.startsWith("https://")) {
+  // To'liq URL allaqachon berilgan bo'lsa, shuni ishlatamiz
+  baseURL = rawBaseUrl;
+} else {
+  // Protokol yozilmagan bo'lsa (masalan, "77.237.245.47:4800" yoki "/77.237.245.47:4800")
+  const cleaned = rawBaseUrl.replace(/^\/+/, ""); // boshidagi '/' belgilarini olib tashlaymiz
+  baseURL = `http://${cleaned}`;
+}
+
+console.log("[API] baseURL:", baseURL);
+
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
+  baseURL,
   // withCredentials: true, // CORS muammosi uchun o'chirildi
 });
 
