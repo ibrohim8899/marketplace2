@@ -1,2 +1,2 @@
-/api/*  https://qrmenu.pythonanywhere.com/:splat  200
+/api/*  http://77.237.245.47:4800/:splat  200
 /*      /index.html  200
