@@ -19,17 +19,45 @@ if (!rawBaseUrl) {
 }
 
 console.log("[API] baseURL:", baseURL);
-
+ 
 const axiosInstance = axios.create({
   baseURL,
   // withCredentials: true, // CORS muammosi uchun o'chirildi
 });
 
+const PUBLIC_ENDPOINTS = [
+  { method: "get", pathPrefix: "/product/products/" },
+  { method: "get", pathPrefix: "/filters/products/" },
+  { method: "post", pathPrefix: "/user/auth/login/" },
+  { method: "post", pathPrefix: "/user/auth/telegram/" },
+];
+
 // Agar token bo'lsa (kelajakda login bo'lsa)
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  const method = (config.method || "get").toLowerCase();
+
+  let urlPath = "";
+  if (config.url) {
+    try {
+      if (/^https?:\/\//i.test(config.url)) {
+        urlPath = new URL(config.url).pathname;
+      } else {
+        urlPath = config.url.split("?")[0];
+      }
+    } catch {
+      urlPath = config.url;
+    }
+  }
+
+  const isPublic = PUBLIC_ENDPOINTS.some(
+    (ep) => ep.method === method && urlPath.startsWith(ep.pathPrefix),
+  );
+
+  if (!isPublic) {
+    const token = localStorage.getItem("access_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
 
   const isFormData = config.data instanceof FormData;
