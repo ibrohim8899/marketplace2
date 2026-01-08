@@ -88,6 +88,49 @@ export default function ProductDetailPage() {
   const handleAddToCart = () => addToCart(product);
   const handleToggleWishlist = () => toggleWishlist(product);
 
+  const handleContactSeller = () => {
+    if (!product) return;
+
+    const ownerUsername =
+      product.owner_username ||
+      product.owner?.username ||
+      null;
+
+    const ownerTelegramId =
+      product.owner_telegram_id ||
+      product.owner?.telegram_id ||
+      null;
+
+    let link = null;
+
+    if (ownerUsername) {
+      const clean = ownerUsername.startsWith("@")
+        ? ownerUsername.slice(1)
+        : ownerUsername;
+      link = `https://t.me/${clean}`;
+    } else if (ownerTelegramId) {
+      link = `tg://user?id=${ownerTelegramId}`;
+    }
+
+    if (!link) {
+      console.warn("Sotuvchi uchun Telegram ma'lumotlari topilmadi");
+      return;
+    }
+
+    try {
+      if (typeof window !== "undefined") {
+        const tg = window.Telegram && window.Telegram.WebApp;
+        if (tg && typeof tg.openTelegramLink === "function") {
+          tg.openTelegramLink(link);
+        } else if (window.open) {
+          window.open(link, "_blank");
+        }
+      }
+    } catch (e) {
+      console.error("Sotuvchi bilan bog'lanish tugmasida xato:", e);
+    }
+  };
+
   return (
     <div className="min-h-[calc(100vh-80px)] bg-gray-50 pb-20">
       {/* RASMLAR GALEREYASI */}
@@ -228,6 +271,14 @@ export default function ProductDetailPage() {
 
         {/* Tugmalar */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Button
+            onClick={handleContactSeller}
+            className="w-full py-3.5 text-base sm:text-lg font-semibold flex items-center justify-center gap-2 sm:gap-3"
+          >
+            <MessageCircle className="w-5 h-5" />
+            {t('contact_seller')}
+          </Button>
+
           {/* <Button
             onClick={handleAddToCart}
             className="w-full py-4 text-lg font-bold flex items-center justify-center gap-3"
