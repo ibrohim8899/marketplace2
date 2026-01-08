@@ -98,43 +98,20 @@ export default function App() {
         return;
       }
 
-      let hash = initDataUnsafe.hash;
-      let authDate = initDataUnsafe.auth_date;
+      const telegramId = user.id || user.user_id || user.telegram_id;
 
-      if (!hash || !authDate) {
-        try {
-          const params = new URLSearchParams(rawInitData);
-          if (!hash) hash = params.get("hash");
-          if (!authDate) authDate = params.get("auth_date");
-        } catch (e) {
-          console.error("Telegram initData parse xatoligi:", e);
-        }
-      }
-
-      if (!hash) {
-        console.warn("[Telegram] hash topilmadi, auto-login to'xtadi.");
+      if (!telegramId) {
+        console.warn("[Telegram] telegram_id aniqlanmadi, auto-login to'xtadi.");
         return;
       }
 
-      const telegramData = {
-        id: user.id,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        username: user.username,
-        photo_url: user.photo_url,
-        auth_date: authDate,
-        hash,
-      };
-
       if (urlPhoneNumber) {
-        telegramData.phone_number = urlPhoneNumber;
+        console.log("[Telegram] URL orqali kelgan telefon raqam:", urlPhoneNumber);
       }
 
-      console.log("[Telegram] Auto login urinyapti", telegramData);
+      console.log("[Telegram] Auto login telegram_id bilan urinyapti:", telegramId);
 
-      autoLoginWithTelegramId(
-        telegramData.id || telegramData.user_id || telegramData.telegram_id,
-      )
+      autoLoginWithTelegramId(telegramId)
         .then((result) => {
           console.log("[Telegram] autoLoginWithTelegramId yakuni:", result);
           if (!result) {
