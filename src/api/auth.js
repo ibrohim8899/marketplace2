@@ -40,6 +40,14 @@ const handleAuthResponse = (data) => {
     }
   }
 
+  try {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("auth_updated"));
+    }
+  } catch (e) {
+    console.error("[Auth] auth_updated event dispatch xatoligi:", e);
+  }
+
   console.log("[Auth] Tokenlar muvaffaqiyatli saqlandi. accessToken bor, refreshToken bor-mi:", !!refreshToken);
   return true;
 };
@@ -132,6 +140,14 @@ export const applyTokensFromUrl = async ({ access, refresh }) => {
         "Auto-login paytida profilni yuklashda xatolik:",
         err.response?.data || err.message,
       );
+    }
+
+    try {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("auth_updated"));
+      }
+    } catch (e) {
+      console.error("[Auth] auth_updated event dispatch xatoligi (URL token):", e);
     }
 
     return true;

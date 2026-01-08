@@ -47,32 +47,52 @@ export default function ProfileCard() {
   const currentLocale = localeMap[lang] || "uz-UZ";
 
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      setHasToken(false);
-      setError(t("profile_login_required"));
-      setLoading(false);
-      return;
-    }
+    if (typeof window === "undefined") return;
 
-    setHasToken(true);
-    const fetchProfile = async () => {
-      try {
-        const { data } = await axiosInstance.get("/user/profile/");
-        setProfile(data);
-      } catch (err) {
-        console.error("Profilni yuklashda xatolik:", err.response?.data || err.message);
-        const detail = err.response?.data?.detail || t("profile_load_failed");
-        setError(detail);
-        if (err.response?.status === 401) {
-          setHasToken(false);
-        }
-      } finally {
+    const loadProfile = () => {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        setHasToken(false);
+        setError(t("profile_login_required"));
         setLoading(false);
+        return;
       }
+
+      setHasToken(true);
+      setLoading(true);
+
+      const fetchProfile = async () => {
+        try {
+          const { data } = await axiosInstance.get("/user/profile/");
+          setProfile(data);
+          setError("");
+        } catch (err) {
+          console.error("Profilni yuklashda xatolik:", err.response?.data || err.message);
+          const detail = err.response?.data?.detail || t("profile_load_failed");
+          setError(detail);
+          if (err.response?.status === 401) {
+            setHasToken(false);
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchProfile();
     };
 
-    fetchProfile();
+    loadProfile();
+
+    const handleAuthUpdated = () => {
+      console.log("[Profile] auth_updated event olindi, profil qayta yuklanmoqda");
+      loadProfile();
+    };
+
+    window.addEventListener("auth_updated", handleAuthUpdated);
+
+    return () => {
+      window.removeEventListener("auth_updated", handleAuthUpdated);
+    };
   }, [t]);
 
   const handleLogout = () => {
