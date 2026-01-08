@@ -281,7 +281,7 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
           <Button
             onClick={handleContactSeller}
-            className="group w-full py-2.5 text-sm sm:text-base font-semibold rounded-full border-2 flex items-center justify-center gap-2 sm:gap-3 transition-all duration-300 bg-white border-indigo-300 text-indigo-600 hover:bg-indigo-50 hover:border-indigo-400 hover:text-indigo-700 dark:bg-slate-800 dark:border-indigo-500 dark:text-indigo-300 dark:hover:bg-slate-700 dark:hover:border-indigo-400 shadow-sm"
+            className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
           >
             <MessageCircle className="w-5 h-5" />
             {t('contact_seller')}
@@ -298,10 +298,7 @@ export default function ProductDetailPage() {
 
           <button
             onClick={handleToggleWishlist}
-            className={`group w-full py-2.5 text-sm sm:text-base font-semibold rounded-full border-2 flex items-center justify-center gap-2 sm:gap-3 transition-all duration-300 ${isInWishlist(productId)
-                ? "bg-white border-rose-300 text-rose-500 hover:bg-rose-50 hover:border-rose-400 dark:bg-slate-800 dark:border-rose-500 dark:text-rose-400 dark:hover:bg-slate-700"
-                : "bg-white border-slate-300 text-slate-600 hover:border-rose-400 hover:text-rose-600 hover:bg-rose-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:border-rose-400 dark:hover:text-rose-400"
-              }`}
+            className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
           >
             <Heart
               className={`w-6 h-6 transition-transform duration-300 ${isInWishlist(productId)
