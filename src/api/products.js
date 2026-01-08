@@ -120,9 +120,36 @@ export const getProductByUid = async (uid) => {
   if (!uid || uid === "undefined") {
     throw new Error("UID yo'q");
   }
+  // Avvalo barcha mahsulotlar ichidan qidiramiz (list endpoint ishonchli ishlaydi)
+  try {
+    const all = await getAllProducts();
+    const found =
+      all.find(
+        (item) =>
+          item?.uid === uid ||
+          String(item?.id || "") === String(uid),
+      ) || null;
 
-  const res = await axiosInstance.get(`/product/products/${uid}/`);
-  return res.data;
+    if (found) {
+      console.log("getProductByUid: mahsulot list ichidan topildi:", found.uid || found.id);
+      return found;
+    }
+  } catch (err) {
+    console.error("getProductByUid: getAllProducts xatoligi:", err.response?.data || err.message);
+  }
+
+  // Agar yuqorida topilmasa, ehtiyot chorasi sifatida bevosita detail endpointni sinab ko'ramiz
+  try {
+    const res = await axiosInstance.get(`/product/products/${uid}/`);
+    console.log("getProductByUid: detail endpointdan product olindi");
+    return res.data;
+  } catch (err) {
+    console.error(
+      "getProductByUid: detail endpoint orqali ham product topilmadi yoki xatolik:",
+      err.response?.data || err.message,
+    );
+    throw err;
+  }
 };
 
 export const deleteProduct = async (uid) => {
