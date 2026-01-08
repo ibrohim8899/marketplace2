@@ -175,17 +175,11 @@ export function CartProvider({ children }) {
   }, [wishlist]);
 
   // Savatchani yangilash funksiyasi
+  // Eslatma: foydalanuvchi uchun cart funksiyasi kerak emas, shuning uchun bu yerda
+  // backendga hech qanday so'rov yuborilmaydi. Cart faqat bo'sh bo'lib turadi.
   const fetchCart = async () => {
-    setLoading(true);
-    try {
-      const items = await getCartItems();
-      setCart(items);
-    } catch (error) {
-      console.log("Savatchani yuklash imkoni bo'lmadi (Login qilinmagan bo'lishi mumkin)");
-      setCart([]); 
-    } finally {
-      setLoading(false);
-    }
+    setCart([]);
+    setLoading(false);
   };
 
   // Ilovaga kirganda savatchani API dan yuklash
@@ -193,27 +187,14 @@ export function CartProvider({ children }) {
     fetchCart();
   }, []);
 
-  const addToCart = async (product) => {
-    try {
-      await addToCartApi(product);
-      await fetchCart();
-    } catch (error) {
-      showNotification({
-        type: 'error',
-        title: 'Savatchaga qo\'shib bo\'lmadi',
-        message: "Tizimga kiring yoki internet aloqasini tekshiring.",
-      });
-    }
+  const addToCart = async () => {
+    // Cart ishlatilmaydi
+    return;
   };
 
-  const removeFromCart = async (productId) => {
-    try {
-      await removeFromCartApi(productId);
-      await fetchCart();
-    } catch (error) {
-      console.error("O'chirishda xatolik", error);
-      fetchCart(); 
-    }
+  const removeFromCart = async () => {
+    // Cart ishlatilmaydi
+    return;
   };
 
   const updateQuantity = async (productId, newQty) => {
@@ -221,14 +202,8 @@ export function CartProvider({ children }) {
       removeFromCart(productId);
       return;
     }
-
-    setCart(prev => prev.map(item => {
-      const itemUid = item.product_uid || item.uid || (item.product?.uid);
-      if (itemUid === productId) {
-        return { ...item, quantity: newQty };
-      }
-      return item;
-    }));
+    // Cart ishlatilmaydi
+    return;
   };
 
   const clearCart = () => {
@@ -278,41 +253,36 @@ export function CartProvider({ children }) {
   // Yordamchi funksiyalar
   const getItemId = (item) => item.product_uid || item.uid || (item.product?.uid);
 
-  const isInCart = (id) => cart.some(item => getItemId(item) === id);
+  const isInCart = () => false;
 
   // Wishlistda tekshirish: faqat 'id' kalitini tekshirish (chunki u standartlashtirilgan)
   const isInWishlist = (id) => wishlist.some(item => item.id === id);
 
-  const getTotalPrice = () => cart.reduce((sum, item) => {
-    const product = item.product || item;
-    const price = Number(product.cost || product.price || 0);
-    const qty = item.quantity || 1;
-    return sum + price * qty;
-  }, 0);
+  const getTotalPrice = () => 0;
 
-  const getTotalItems = () => cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+  const getTotalItems = () => 0;
 
-  const value = {
-    cart,
-    wishlist,
-    loading,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    clearCart,
-    toggleWishlist,
-    isInCart,
-    isInWishlist,
-    getTotalPrice,
-    getTotalItems,
-    fetchCart 
-  };
+  const value = {
+    cart,
+    wishlist,
+    loading,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    toggleWishlist,
+    isInCart,
+    isInWishlist,
+    getTotalPrice,
+    getTotalItems,
+    fetchCart
+  };
 
-  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
 
 export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) throw new Error('useCart must be used within CartProvider');
-  return context;
+  const context = useContext(CartContext);
+  if (!context) throw new Error('useCart must be used within CartProvider');
+  return context;
 };

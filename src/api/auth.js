@@ -2,6 +2,7 @@
 import axiosInstance from "./axiosInstance";
 
 const handleAuthResponse = (data) => {
+  console.log("[Auth] handleAuthResponse raw data:", data);
   const accessToken =
     data?.tokens?.access ||
     data?.access ||
@@ -21,6 +22,7 @@ const handleAuthResponse = (data) => {
     null;
 
   if (!accessToken) {
+    console.warn("[Auth] access token topilmadi, login muvaffaqiyatsiz.");
     return false;
   }
 
@@ -38,6 +40,7 @@ const handleAuthResponse = (data) => {
     }
   }
 
+  console.log("[Auth] Tokenlar muvaffaqiyatli saqlandi. accessToken bor, refreshToken bor-mi:", !!refreshToken);
   return true;
 };
 
@@ -85,11 +88,16 @@ export const autoLoginWithTelegramId = async (telegramId) => {
       telegram_id: telegramId,
     };
 
+    console.log("[Telegram] autoLoginWithTelegramId payload:", payload);
+
     const response = await axiosInstance.post("/user/auth/telegram/token/", payload);
 
     const data = response.data || {};
+    console.log("[Telegram] autoLoginWithTelegramId response data:", data);
 
-    return handleAuthResponse(data);
+    const ok = handleAuthResponse(data);
+    console.log("[Telegram] autoLoginWithTelegramId handleAuthResponse result:", ok);
+    return ok;
 
   } catch (error) {
     console.error("Telegram ID orqali auto-login xatoligi:", error.response?.data || error.message);
