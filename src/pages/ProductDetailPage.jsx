@@ -27,8 +27,6 @@ import {
   AlertCircle, // Qo‘shimcha: status uchun
   Calendar, // Qo‘shimcha: created_at uchun
   User,
-  MessageSquare,
-  Heart
 } from "lucide-react";
 
 export default function ProductDetailPage() {
@@ -280,30 +278,28 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Tugmalar */}
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
           <Button
             onClick={handleContactSeller}
-            className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-300 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
+            className="group w-full py-3 text-sm sm:text-base font-semibold rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-sky-500 text-white hover:bg-sky-600 active:bg-sky-700 dark:bg-sky-400 dark:hover:bg-sky-500 dark:active:bg-sky-600 shadow-md transition-colors duration-200"
           >
             <MessageCircle className="w-5 h-5" />
             {t('contact_seller')}
           </Button>
           <Button
             onClick={handleToggleWishlist}
-            className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-300 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
+            className="group w-full py-3 text-sm sm:text-base font-semibold rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-sky-500 text-white hover:bg-sky-600 active:bg-sky-700 dark:bg-sky-400 dark:hover:bg-sky-500 dark:active:bg-sky-600 shadow-md transition-colors duration-200"
           >
             <Heart
-              className={`w-6 h-6 transition-transform duration-300 ${isInWishlist(productId)
-                  ? "fill-rose-500 text-rose-500 scale-110"
-                  : "text-slate-400 group-hover:text-rose-500 group-hover:scale-110"
+              className={`w-5 h-5 transition-transform duration-300 ${isInWishlist(productId)
+                  ? "fill-white text-white scale-110"
+                  : "text-sky-100 group-hover:scale-110"
                 }`}
             />
             <span className="relative">
               {isInWishlist(productId) ? t('remove_from_wishlist') : t('add_to_wishlist')}
             </span>
           </Button>
-
- 
         </div>
 
         {/* Sharhlar */}
