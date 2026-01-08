@@ -281,14 +281,14 @@ export default function ProductDetailPage() {
 
         {/* Tugmalar */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
-          {/* <Button
+          <Button
             onClick={handleContactSeller}
             className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
           >
             <MessageCircle className="w-5 h-5" />
             {t('contact_seller')}
           </Button>
-          <button
+          <Button
             onClick={handleToggleWishlist}
             className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
           >
@@ -301,37 +301,9 @@ export default function ProductDetailPage() {
             <span className="relative">
               {isInWishlist(productId) ? t('remove_from_wishlist') : t('add_to_wishlist')}
             </span>
-          </button> */}
+          </Button>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
-            {/* Aloqa tugmasi */}
-            <button
-              onClick={handleContactSeller}
-              className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-2xl border border-slate-200 bg-white/50 py-4 text-sm font-semibold tracking-wide text-slate-800 backdrop-blur-md transition-all duration-300 hover:border-slate-900 hover:bg-slate-900 hover:text-white dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-200 dark:hover:border-slate-100 dark:hover:bg-slate-100 dark:hover:text-slate-900 sm:text-base"
-            >
-              <MessageSquare className="h-5 w-5 transition-transform duration-500 group-hover:rotate-[360deg] group-hover:scale-110" />
-              <span className="relative z-10">{t('contact_seller')}</span>
-            </button>
-
-            {/* Wishlist tugmasi */}
-            <button
-              onClick={handleToggleWishlist}
-              className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-2xl border border-slate-200 bg-white/50 py-4 text-sm font-semibold tracking-wide text-slate-800 backdrop-blur-md transition-all duration-300 hover:shadow-lg active:scale-[0.98] dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-200 sm:text-base"
-            >
-              <Heart
-                className={`h-5 w-5 transition-all duration-500 ${isInWishlist(productId)
-                    ? "fill-rose-500 text-rose-500 scale-125"
-                    : "text-slate-400 group-hover:text-rose-500 group-hover:scale-125"
-                  }`}
-              />
-              <span className="relative z-10">
-                {isInWishlist(productId) ? t('remove_from_wishlist') : t('add_to_wishlist')}
-              </span>
-
-              {/* Minimalist Hover effekti (faqat wishlist uchun orqa fonda) */}
-              <div className="absolute inset-0 z-0 translate-y-full bg-rose-50/30 transition-transform duration-300 group-hover:translate-y-0 dark:bg-rose-500/5" />
-            </button>
-          </div>
+ 
         </div>
 
         {/* Sharhlar */}
