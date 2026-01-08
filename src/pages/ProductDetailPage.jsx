@@ -270,10 +270,10 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Tugmalar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           <Button
             onClick={handleContactSeller}
-            className="w-full py-3.5 text-base sm:text-lg font-semibold flex items-center justify-center gap-2 sm:gap-3"
+            className="group w-full py-3.5 text-base sm:text-lg font-semibold rounded-full border-2 flex items-center justify-center gap-2 sm:gap-3 transition-all duration-300 bg-white border-indigo-300 text-indigo-600 hover:bg-indigo-50 hover:border-indigo-400 hover:text-indigo-700 dark:bg-slate-800 dark:border-indigo-500 dark:text-indigo-300 dark:hover:bg-slate-700 dark:hover:border-indigo-400 shadow-sm"
           >
             <MessageCircle className="w-5 h-5" />
             {t('contact_seller')}
