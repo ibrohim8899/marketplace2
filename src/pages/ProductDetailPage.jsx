@@ -283,14 +283,14 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
           <Button
             onClick={handleContactSeller}
-            className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
+            className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-300 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
           >
             <MessageCircle className="w-5 h-5" />
             {t('contact_seller')}
           </Button>
           <Button
             onClick={handleToggleWishlist}
-            className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
+            className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-300 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
           >
             <Heart
               className={`w-6 h-6 transition-transform duration-300 ${isInWishlist(productId)
