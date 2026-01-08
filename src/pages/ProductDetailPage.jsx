@@ -281,14 +281,14 @@ export default function ProductDetailPage() {
         <div className="mt-4 grid grid-cols-2 gap-3 sm:gap-4">
           <Button
             onClick={handleContactSeller}
-            className="group w-full py-3 text-sm sm:text-base font-semibold rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-sky-500 text-white hover:bg-sky-600 active:bg-sky-700 dark:bg-sky-400 dark:hover:bg-sky-500 dark:active:bg-sky-600 shadow-md transition-colors duration-200"
+            className="group w-full py-3 text-[13px] sm:text-base font-semibold rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-sky-500 text-white hover:bg-sky-600 active:bg-sky-700 dark:bg-sky-400 dark:hover:bg-sky-500 dark:active:bg-sky-600 shadow-md transition-colors duration-200"
           >
             <MessageCircle className="w-5 h-5" />
             {t('contact_seller')}
           </Button>
           <Button
             onClick={handleToggleWishlist}
-            className="group w-full py-3 text-sm sm:text-base font-semibold rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-sky-500 text-white hover:bg-sky-600 active:bg-sky-700 dark:bg-sky-400 dark:hover:bg-sky-500 dark:active:bg-sky-600 shadow-md transition-colors duration-200"
+            className="group w-full py-3 text-[13px] sm:text-base font-semibold rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-sky-500 text-white hover:bg-sky-600 active:bg-sky-700 dark:bg-sky-400 dark:hover:bg-sky-500 dark:active:bg-sky-600 shadow-md transition-colors duration-200"
           >
             <Heart
               className={`w-5 h-5 transition-transform duration-300 ${isInWishlist(productId)
