@@ -85,7 +85,7 @@ export const autoLoginWithTelegramId = async (telegramId) => {
       telegram_id: telegramId,
     };
 
-    const response = await axiosInstance.post("/test/test/", payload);
+    const response = await axiosInstance.post("/user/auth/telegram/token/", payload);
 
     const data = response.data || {};
 

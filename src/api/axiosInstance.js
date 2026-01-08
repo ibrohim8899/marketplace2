@@ -30,6 +30,7 @@ const PUBLIC_ENDPOINTS = [
   { method: "get", pathPrefix: "/filters/products/" },
   { method: "post", pathPrefix: "/user/auth/login/" },
   { method: "post", pathPrefix: "/user/auth/telegram/" },
+  { method: "post", pathPrefix: "/user/auth/telegram/token/" },
 ];
 
 // Agar token bo'lsa (kelajakda login bo'lsa)
