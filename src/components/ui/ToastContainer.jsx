@@ -17,19 +17,19 @@ export default function ToastContainer({ toasts, onClose }) {
         return (
           <div
             key={toast.id}
-            className="pointer-events-auto w-full max-w-md shadow-lg rounded-2xl border border-gray-200 bg-white/95 px-4 py-3 flex items-start gap-3 transform transition-all duration-300 animate-slide-in backdrop-blur-sm"
+            className="pointer-events-auto w-full max-w-md shadow-lg rounded-2xl border border-gray-200 bg-white/95 text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-50 px-4 py-3 flex items-start gap-3 transform transition-all duration-300 animate-slide-in backdrop-blur-sm"
           >
             <div className="mt-0.5 flex-shrink-0">
               <Icon className="w-5 h-5 text-gray-700" />
             </div>
             <div className="flex-1 min-w-0">
               {toast.title && (
-                <p className="text-sm sm:text-base font-semibold leading-snug truncate">
+                <p className="text-sm sm:text-base font-semibold leading-snug truncate text-gray-900 dark:text-gray-50">
                   {toast.title}
                 </p>
               )}
               {toast.message && (
-                <p className="mt-1 text-sm leading-snug text-gray-700">
+                <p className="mt-1 text-sm leading-snug text-gray-700 dark:text-gray-200">
                   {toast.message}
                 </p>
               )}

@@ -237,38 +237,35 @@ export default function ProductDetailPage() {
             {isInCart(productId) ? "Savatchada" : "Savatchaga qo'shish"}
           </Button> */}
 
-          <Button
+          <button
             onClick={handleToggleWishlist}
-            variant={isInWishlist(productId) ? "secondary" : "outline"}
-            className={`group w-full py-3.5 text-base sm:text-lg font-semibold rounded-full border-2 flex items-center justify-center gap-2 sm:gap-3 transition-all duration-200 ${
-              isInWishlist(productId)
-                ? "bg-black-50 border-gray-200 text-black-600 hover:bg-black-500 hover:text-black-100 shadow-md"
-                : "bg-white border-gray-200 text-black-500 hover:bg-black-50 hover:border-gray-100"
-            }`}
+            className={`group w-full py-3.5 text-base sm:text-lg font-semibold rounded-full border-2 flex items-center justify-center gap-2 sm:gap-3 transition-all duration-300 ${isInWishlist(productId)
+                ? "bg-white border-rose-300 text-rose-500 hover:bg-rose-50 hover:border-rose-400 dark:bg-slate-800 dark:border-rose-500 dark:text-rose-400 dark:hover:bg-slate-700"
+                : "bg-white border-slate-300 text-slate-600 hover:border-rose-400 hover:text-rose-600 hover:bg-rose-50 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:border-rose-400 dark:hover:text-rose-400"
+              }`}
           >
             <Heart
-              className={`w-6 h-6 transition-transform duration-200 ${
-                isInWishlist(productId)
-                  ? "fill-rose-500 text-rose-500 group-hover:scale-105"
-                  : "group-hover:scale-105"
-              }`}
+              className={`w-6 h-6 transition-transform duration-300 ${isInWishlist(productId)
+                  ? "fill-rose-500 text-rose-500 scale-110"
+                  : "text-slate-400 group-hover:text-rose-500 group-hover:scale-110"
+                }`}
             />
             <span className="relative">
               {isInWishlist(productId) ? t('remove_from_wishlist') : t('add_to_wishlist')}
             </span>
-          </Button>
+          </button>
         </div>
 
         {/* Sharhlar */}
         <div className="mt-10 pt-8 border-t">
           <h2 className="text-2xl font-bold mb-6">{t('reviews_title')}</h2>
-          <ReviewForm 
-            productId={uid} 
+          <ReviewForm
+            productId={uid}
             onAdded={() => setRefreshComments(prev => prev + 1)}
           />
           <div className="mt-8">
-            <ReviewList 
-              productId={uid} 
+            <ReviewList
+              productId={uid}
               key={refreshComments}
               onCommentDeleted={() => setRefreshComments(prev => prev + 1)}
             />
