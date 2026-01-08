@@ -279,23 +279,13 @@ export default function ProductDetailPage() {
 
         {/* Tugmalar */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
-          <Button
+          {/* <Button
             onClick={handleContactSeller}
             className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
           >
             <MessageCircle className="w-5 h-5" />
             {t('contact_seller')}
           </Button>
-
-          {/* <Button
-            onClick={handleAddToCart}
-            className="w-full py-4 text-lg font-bold flex items-center justify-center gap-3"
-            variant={isInCart(productId) ? "secondary" : "default"}
-          >
-            <ShoppingCart className="w-6 h-6" />
-            {isInCart(productId) ? "Savatchada" : "Savatchaga qo'shish"}
-          </Button> */}
-
           <button
             onClick={handleToggleWishlist}
             className="group w-full py-2.5 text-sm sm:text-base font-medium rounded-full flex items-center justify-center gap-2 sm:gap-3 bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-200 dark:text-slate-900 dark:hover:bg-slate-300 transition-colors duration-200"
@@ -309,7 +299,34 @@ export default function ProductDetailPage() {
             <span className="relative">
               {isInWishlist(productId) ? t('remove_from_wishlist') : t('add_to_wishlist')}
             </span>
-          </button>
+          </button> */}
+
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
+            {/* Contact Seller Button */}
+            <button
+              onClick={handleContactSeller}
+              className="group relative flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-lg hover:shadow-slate-200/50 active:scale-95 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:shadow-none sm:text-base"
+            >
+              <MessageCircle className="h-5 w-5 transition-transform duration-300 group-hover:rotate-12" />
+              <span>{t('contact_seller')}</span>
+            </button>
+
+            {/* Wishlist Button */}
+            <button
+              onClick={handleToggleWishlist}
+              className="group relative flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:shadow-lg hover:shadow-slate-200/50 active:scale-95 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:shadow-none sm:text-base"
+            >
+              <Heart
+                className={`h-5 w-5 transition-all duration-300 ${isInWishlist(productId)
+                    ? "fill-rose-500 text-rose-500 scale-110"
+                    : "text-slate-400 group-hover:text-rose-500 group-hover:scale-110"
+                  }`}
+              />
+              <span>
+                {isInWishlist(productId) ? t('remove_from_wishlist') : t('add_to_wishlist')}
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* Sharhlar */}
