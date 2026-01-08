@@ -15,7 +15,7 @@ if (!rawBaseUrl) {
 } else {
   // Protokol yozilmagan bo'lsa (masalan, "77.237.245.47:4800" yoki "/77.237.245.47:4800")
   const cleaned = rawBaseUrl.replace(/^\/+/, ""); // boshidagi '/' belgilarini olib tashlaymiz
-  baseURL = `http://${cleaned}`;
+  baseURL = `https://${cleaned}`;
 }
 
 console.log("[API] baseURL:", baseURL);
