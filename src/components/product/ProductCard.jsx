@@ -33,9 +33,37 @@ export default function ProductCard({ product, loading = false }) {
     stock,
     photo1,
     thumbnail,
+    photo,
+    image,
+    image1,
+    images,
+    photos,
     rating,
     discountPercentage,
   } = product;
+
+  const galleryImages = [];
+  if (photo1) galleryImages.push(photo1);
+  if (thumbnail) galleryImages.push(thumbnail);
+  if (photo) galleryImages.push(photo);
+  if (image) galleryImages.push(image);
+  if (image1) galleryImages.push(image1);
+
+  if (Array.isArray(images)) {
+    images.forEach((img) => {
+      if (typeof img === 'string' && img) galleryImages.push(img);
+      else if (img && typeof img.url === 'string') galleryImages.push(img.url);
+    });
+  }
+
+  if (Array.isArray(photos)) {
+    photos.forEach((img) => {
+      if (typeof img === 'string' && img) galleryImages.push(img);
+      else if (img && typeof img.url === 'string') galleryImages.push(img.url);
+    });
+  }
+
+  const mainImage = galleryImages[0] || null;
 
   const productId = uid || product.id;
   const inCart = productId ? isInCart?.(productId) : false;
@@ -62,11 +90,17 @@ export default function ProductCard({ product, loading = false }) {
     >
       {/* Rasm container */}
       <div className="relative aspect-square overflow-hidden bg-gray-50">
-        <img
-          src={photo1 || thumbnail}
-          alt={name || title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 "
-        />
+        {mainImage ? (
+          <img
+            src={mainImage}
+            alt={name || title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 "
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
+            Rasmlar yo'q
+          </div>
+        )}
 
         {/* Chegirma badge */}
         {discountPercentage && discountPercentage > 0 && (

@@ -62,13 +62,30 @@ export default function ProductDetailPage() {
   if (loading) return <LoadingSpinner />;
   if (!product) return <EmptyState message={t('product_not_found')} />;
 
-  // Backenddan 5 ta rasm olish (faqat mavjudlarini)
+  // Backenddan rasm(lar)ni olish (bir nechta mumkin bo'lgan fieldlardan)
   const images = [];
   if (product.photo1) images.push(product.photo1);
   if (product.photo2) images.push(product.photo2);
   if (product.photo3) images.push(product.photo3);
   if (product.photo4) images.push(product.photo4);
   if (product.photo5) images.push(product.photo5);
+  if (product.thumbnail) images.push(product.thumbnail);
+  if (product.photo) images.push(product.photo);
+  if (product.image) images.push(product.image);
+
+  if (Array.isArray(product.images)) {
+    product.images.forEach((img) => {
+      if (typeof img === "string" && img) images.push(img);
+      else if (img && typeof img.url === "string") images.push(img.url);
+    });
+  }
+
+  if (Array.isArray(product.photos)) {
+    product.photos.forEach((img) => {
+      if (typeof img === "string" && img) images.push(img);
+      else if (img && typeof img.url === "string") images.push(img.url);
+    });
+  }
 
   const hasMultipleImages = images.length > 1;
   const productId = product.uid || product.id;
@@ -145,7 +162,13 @@ export default function ProductDetailPage() {
       <div className="relative bg-white">
         <div className="relative group cursor-pointer" onClick={handleImageClick}>
           <img
-            src={images[currentImageIndex] || product.thumbnail || product.photo1}
+            src={
+              images[currentImageIndex] ||
+              product.thumbnail ||
+              product.photo1 ||
+              product.photo ||
+              product.image
+            }
             alt={product.title || product.name}
             className="w-full h-64 sm:h-80 md:h-96 lg:h-[520px] object-cover"
             loading="lazy"
@@ -322,7 +345,22 @@ export default function ProductDetailPage() {
       <ImageZoomModal
         isOpen={isZoomModalOpen}
         onClose={() => setIsZoomModalOpen(false)}
-        images={images.length > 0 ? images : [product.thumbnail || product.photo1]}
+        images={
+          images.length > 0
+            ? images
+            : [
+                product.thumbnail ||
+                product.photo1 ||
+                product.photo2 ||
+                product.photo3 ||
+                product.photo4 ||
+                product.photo5 ||
+                product.photo ||
+                product.image ||
+                product.images?.[0] ||
+                product.photos?.[0],
+              ]
+        }
         initialIndex={currentImageIndex}
       />
 
