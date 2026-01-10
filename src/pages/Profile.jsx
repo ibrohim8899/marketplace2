@@ -127,13 +127,13 @@ export default function ProfileCard() {
   };
 
   const renderEmptyState = () => (
-    <div className="bg-white rounded-2xl shadow-md p-6 text-center space-y-4 overflow-x-hidden">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-md p-6 text-center space-y-4 overflow-x-hidden">
       <div className="mx-auto w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
         <User className="w-8 h-8" />
       </div>
       <div>
-        <h2 className="text-lg font-semibold text-gray-900">{t("profile_empty_title")}</h2>
-        <p className="text-gray-500 text-sm mt-1">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-slate-100">{t("profile_empty_title")}</h2>
+        <p className="text-gray-500 dark:text-slate-400 text-sm mt-1">
           {error || t("profile_empty_desc")}
         </p>
       </div>
@@ -326,7 +326,7 @@ export default function ProfileCard() {
   };
 
   return (
-    <div className="bg-white px-3 pt-2 pb-3 overflow-hidden">
+    <div className="bg-white dark:bg-slate-950 px-3 pt-2 pb-3 overflow-hidden">
       <div className="space-y-3 overflow-hidden">
         <div className="rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-4 py-4 sm:px-5 sm:py-5 text-white">
           <div className="flex items-center gap-3">
@@ -375,30 +375,30 @@ export default function ProfileCard() {
         <div className="space-y-3">
           <div className="grid grid-cols-1 gap-3">
             {infoItems.map(({ label, value, icon: Icon, accent }) => (
-              <div key={label} className="rounded-2xl border border-gray-100 p-3">
-                <p className="text-[11px] uppercase tracking-wide text-gray-500 flex items-center gap-2">
+              <div key={label} className="rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+                <p className="text-[11px] uppercase tracking-wide text-gray-500 dark:text-slate-400 flex items-center gap-2">
                   <Icon className={`w-4 h-4 ${accent}`} />
                   {label}
                 </p>
-                <p className="mt-1 text-sm font-semibold text-gray-900 break-words">
+                <p className="mt-1 text-sm font-semibold text-gray-900 dark:text-slate-100 break-words">
                   {value || t("common_no_data")}
                 </p>
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 gap-3 text-xs text-gray-700">
-            <div className="rounded-2xl border border-gray-100 p-3">
-              <p className="uppercase tracking-wide text-gray-500">
+          <div className="grid grid-cols-1 gap-3 text-xs text-gray-700 dark:text-slate-200">
+            <div className="rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-3">
+              <p className="uppercase tracking-wide text-gray-500 dark:text-slate-400">
                 {t("profile_registered_at")}
               </p>
-              <p className="mt-1 font-semibold">
+              <p className="mt-1 font-semibold text-gray-900 dark:text-slate-100">
                 {profile.created_at ? formatDate(profile.created_at, currentLocale) : t("common_no_data")}
               </p>
             </div>
 
             {(profile.location || profile.address || profile.website) && (
-              <div className="rounded-2xl border border-gray-100 p-3 space-y-1">
+              <div className="rounded-2xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-3 space-y-1">
                 {profile.location && (
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4" />
@@ -460,14 +460,14 @@ export default function ProfileCard() {
 
         {showLogoutConfirm && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
-            <div className="w-full max-w-sm mx-4 rounded-2xl bg-white text-gray-900 shadow-xl p-5">
+            <div className="w-full max-w-sm mx-4 rounded-2xl bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 shadow-xl p-5">
               <h2 className="text-lg font-semibold mb-2">
                 {t("profile_logout_confirm_title")}
               </h2>
-              <p className="text-sm text-gray-700 mb-3">
+              <p className="text-sm text-gray-700 dark:text-slate-300 mb-3">
                 {t("profile_logout_confirm_description")}
               </p>
-              <p className="text-xs text-gray-500 mb-5">
+              <p className="text-xs text-gray-500 dark:text-slate-400 mb-5">
                 {t("profile_logout_info_description")}
               </p>
 
@@ -475,7 +475,7 @@ export default function ProfileCard() {
                 <button
                   type="button"
                   onClick={() => setShowLogoutConfirm(false)}
-                  className="flex-1 py-2.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                  className="flex-1 py-2.5 rounded-xl border border-gray-300 dark:border-slate-700 text-sm font-medium text-gray-700 dark:text-slate-100 bg-white dark:bg-slate-900 hover:bg-gray-50 dark:hover:bg-slate-800 transition-colors"
                 >
                   {t("profile_logout_confirm_cancel")}
                 </button>

@@ -295,7 +295,7 @@ export default function CategorySlider() {
         {[...Array(6)].map((_, i) => (
           <div
             key={i}
-            className="h-7 w-16 rounded-full bg-slate-200/80 animate-pulse flex-shrink-0"
+            className="h-7 w-16 rounded-full bg-slate-200/80 dark:bg-slate-700/80 animate-pulse flex-shrink-0"
           />
         ))}
       </div>
@@ -306,7 +306,7 @@ export default function CategorySlider() {
     <div className="relative w-full">
       <button
         onClick={scrollLeft}
-        className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md w-8 h-8 flex items-center justify-center rounded-full hover:scale-110 transition
+        className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-slate-900 shadow-md w-8 h-8 flex items-center justify-center rounded-full hover:scale-110 transition
           ${canScrollLeft ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       >
         <ChevronLeft size={18} />
@@ -321,7 +321,7 @@ export default function CategorySlider() {
           <Link
             key={cat.uid}
             to={`/category/${cat.uid}`} // UID bo‘yicha, "all" uchun /category/all
-            className="min-w-max px-3 py-2 bg-white rounded-lg shadow text-xs font-medium cursor-pointer hover:bg-gray-100 capitalize border border-gray-200 hover:border-gray-300"
+            className="min-w-max px-3 py-2 bg-white dark:bg-slate-900 rounded-lg shadow text-xs font-medium cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-800 capitalize border border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-500 text-gray-800 dark:text-slate-100"
           >
             {cat.name}
           </Link>
@@ -330,7 +330,7 @@ export default function CategorySlider() {
 
       <button
         onClick={scrollRight}
-        className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md w-8 h-8 flex items-center justify-center rounded-full hover:scale-110 transition
+        className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-slate-900 shadow-md w-8 h-8 flex items-center justify-center rounded-full hover:scale-110 transition
           ${canScrollRight ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       >
         <ChevronRight size={18} />

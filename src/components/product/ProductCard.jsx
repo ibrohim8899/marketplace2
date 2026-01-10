@@ -10,7 +10,7 @@ export default function ProductCard({ product, loading = false }) {
   // Loading skeleton
   if (loading) {
     return (
-      <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100">
+      <div className="bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm border border-gray-100 dark:border-slate-700">
         <Skeleton className="w-full aspect-square" />
         <div className="p-3 space-y-2">
           <Skeleton className="h-3 w-3/4" />
@@ -86,10 +86,10 @@ export default function ProductCard({ product, loading = false }) {
   return (
     <Link
       to={`/product/${productId}`}
-      className="group block bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 hover:shadow-md hover:border-gray-300 transition-all duration-300"
+      className="group block bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-slate-700 hover:shadow-md hover:border-gray-300 dark:hover:border-slate-500 transition-all duration-300"
     >
       {/* Rasm container */}
-      <div className="relative aspect-square overflow-hidden bg-gray-50">
+      <div className="relative aspect-square overflow-hidden bg-gray-50 dark:bg-slate-800">
         {mainImage ? (
           <img
             src={mainImage}
@@ -97,7 +97,7 @@ export default function ProductCard({ product, loading = false }) {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 "
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
+          <div className="w-full h-full flex items-center justify-center text-xs text-gray-400 dark:text-slate-400">
             Rasmlar yo'q
           </div>
         )}
@@ -115,7 +115,7 @@ export default function ProductCard({ product, loading = false }) {
           className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 border ${
             inWishlist
               ? "bg-red-500 text-white border-red-500"
-              : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-red-500 hover:text-white hover:border-red-500"
+              : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-red-500 hover:text-white hover:border-red-500 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-600 dark:hover:bg-red-500 dark:hover:border-red-500"
           }`}
         >
           <Heart
@@ -127,21 +127,21 @@ export default function ProductCard({ product, loading = false }) {
       {/* Ma'lumotlar qismi */}
       <div className="p-3 space-y-2">
         {/* Mahsulot nomi */}
-        <h3 className="text-gray-800 font-medium text-sm line-clamp-2 leading-tight">
+        <h3 className="text-gray-800 dark:text-slate-100 font-medium text-sm line-clamp-2 leading-tight">
           {name || title || "Nomsiz mahsulot"}
         </h3>
 
         {/* Narx va Stock - yonma-yon */}
         <div className="flex items-baseline justify-between">
           <div className="flex items-baseline gap-1">
-            <span className="text-lg font-bold text-gray-900">
+            <span className="text-lg font-bold text-gray-900 dark:text-slate-50">
               {(cost || price).toLocaleString()}
             </span>
-            <span className="text-xs text-gray-500">so'm</span>
+            <span className="text-xs text-gray-500 dark:text-slate-400">so'm</span>
           </div>
           
           {(amount || stock) > 0 && (
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-400 dark:text-slate-500">
               {amount || stock} ta
             </span>
           )}

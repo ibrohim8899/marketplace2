@@ -162,12 +162,12 @@ export default function ReviewList({ productId, onCommentDeleted }) {
     }
   };
 
-  if (loading) return <p className="text-center text-gray-500">{t('review_loading')}</p>;
+  if (loading) return <p className="text-center text-gray-500 dark:text-slate-400">{t('review_loading')}</p>;
 
   return (
     <div className="space-y-4">
       {comments.length === 0 ? (
-        <p className="text-center text-gray-500 py-8">{t('review_empty')}</p>
+        <p className="text-center text-gray-500 dark:text-slate-400 py-8">{t('review_empty')}</p>
       ) : (
         comments.map((comment) => {
           const commentId = comment.uid || comment.id;
@@ -183,7 +183,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
           return (
             <div
               key={commentId}
-              className="border border-gray-200 rounded-lg p-4 bg-white hover:shadow-md transition-shadow"
+              className="border border-gray-200 dark:border-slate-700 rounded-lg p-4 bg-white dark:bg-slate-900 hover:shadow-md transition-shadow"
             >
               {/* Commenter ma'lumotlari */}
               <div className="flex items-start justify-between mb-3">
@@ -192,11 +192,11 @@ export default function ReviewList({ productId, onCommentDeleted }) {
                     {comment.owner_name?.charAt(0) || comment.user?.first_name?.charAt(0) || comment.user?.email?.charAt(0) || 'U'}
                   </div>
                   <div>
-                    <div className="font-semibold text-gray-800">
+                    <div className="font-semibold text-gray-800 dark:text-slate-100">
                       {comment.owner_name || `${comment.user?.first_name} ${comment.user?.last_name || comment.user?.email}` || 'Noma\'lum'}
                     </div>
 
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-slate-400">
                       {new Date(comment.created_at).toLocaleDateString('uz-UZ')}
                     </p>
                   </div>
@@ -211,7 +211,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
                             type="button"
                             onClick={() => handleUpdate(comment)}
                             disabled={isBusy}
-                            className="p-1.5 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-xs disabled:opacity-60"
+                            className="p-1.5 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 text-xs disabled:opacity-60 dark:bg-emerald-900/40 dark:text-emerald-200 dark:hover:bg-emerald-900/60"
                           >
                             <Check className="w-3 h-3" />
                           </button>
@@ -219,7 +219,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
                             type="button"
                             onClick={cancelEdit}
                             disabled={isBusy}
-                            className="p-1.5 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 text-xs disabled:opacity-60"
+                            className="p-1.5 rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 text-xs disabled:opacity-60 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
                           >
                             <X className="w-3 h-3" />
                           </button>
@@ -229,7 +229,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
                           <button
                             type="button"
                             onClick={() => startEdit(comment)}
-                            className="p-1.5 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs"
+                            className="p-1.5 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 text-xs dark:bg-blue-900/40 dark:text-blue-200 dark:hover:bg-blue-900/60"
                           >
                             <Edit2 className="w-3 h-3" />
                           </button>
@@ -237,7 +237,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
                             type="button"
                             onClick={() => handleDelete(comment)}
                             disabled={isBusy}
-                            className="p-1.5 rounded-full bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs disabled:opacity-60"
+                            className="p-1.5 rounded-full bg-rose-50 text-rose-600 hover:bg-rose-100 text-xs disabled:opacity-60 dark:bg-rose-900/40 dark:text-rose-200 dark:hover:bg-rose-900/60"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
@@ -253,13 +253,13 @@ export default function ReviewList({ productId, onCommentDeleted }) {
                 <textarea
                   value={editingText}
                   onChange={(e) => setEditingText(e.target.value)}
-                  className="w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 dark:border-slate-700 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100"
                   rows={3}
                 />
               ) : (
                 <>
                   <p
-                    className={`text-gray-700 leading-relaxed break-words ${
+                    className={`text-gray-700 dark:text-slate-200 leading-relaxed break-words ${
                       !isExpanded && shouldClamp ? 'line-clamp-2' : ''
                     }`}
                   >

@@ -269,7 +269,7 @@ export default function ProductDetailPage() {
 
       <Container className="mt-6 space-y-7">
         <div className="space-y-4">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-slate-50">
             {product.title || product.name}
           </h1>
 
@@ -293,7 +293,7 @@ export default function ProductDetailPage() {
             </Badge>
 
             {(product.rating || product.rating === 0) && (
-              <div className="flex items-center gap-1 text-gray-600">
+              <div className="flex items-center gap-1 text-gray-600 dark:text-slate-300">
                 <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                 <span>{Number(product.rating).toFixed(1)}</span>
               </div>
@@ -310,15 +310,15 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        <p className="text-gray-700 leading-relaxed text-base">
+        <p className="text-gray-700 dark:text-slate-200 leading-relaxed text-base">
           {product.description || t('description_not_available')}
         </p>
 
         {/* Qo‘shimcha backend ma’lumotlari (location, status, created_at, seller) */}
-        <div className="space-y-4 mt-8 pt-8 border-t">
-          <h2 className="text-xl font-bold text-gray-800">{t('additional_info')}</h2>
+        <div className="space-y-4 mt-8 pt-8 border-t border-gray-200 dark:border-slate-800">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-slate-100">{t('additional_info')}</h2>
 
-          <div className="flex items-center gap-3 text-gray-600">
+          <div className="flex items-center gap-3 text-gray-600 dark:text-slate-300">
             <User className="w-5 h-5 text-indigo-500" />
             <span>
               {t('seller_label')}: {ownerDisplay}
@@ -373,8 +373,8 @@ export default function ProductDetailPage() {
         </div>
 
         {/* Sharhlar */}
-        <div className="mt-10 pt-8 border-t">
-          <h2 className="text-2xl font-bold mb-6">{t('reviews_title')}</h2>
+        <div className="mt-10 pt-8 border-t border-gray-200 dark:border-slate-800">
+          <h2 className="text-2xl font-bold mb-6 text-gray-900 dark:text-slate-50">{t('reviews_title')}</h2>
           <ReviewForm
             productId={uid}
             onAdded={() => setRefreshComments(prev => prev + 1)}

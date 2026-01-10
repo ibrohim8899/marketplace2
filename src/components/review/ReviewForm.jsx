@@ -73,7 +73,7 @@ export default function ReviewForm({ productId, onAdded }) {
         placeholder={t('review_placeholder')}
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        className="border border-gray-300 rounded-lg py-2 px-3 w-full h-20 focus:ring-2 focus:ring-blue-500 resize-none"
+        className="border border-gray-300 dark:border-slate-700 rounded-lg py-2 px-3 w-full h-20 focus:ring-2 focus:ring-blue-500 resize-none bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100"
       />
       
       <Button 
