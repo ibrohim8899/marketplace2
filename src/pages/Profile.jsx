@@ -158,7 +158,6 @@ export default function ProfileCard() {
     : profile.email?.[0]?.toUpperCase() || "U";
 
   const infoItems = [
-    { label: t("profile_label_email"), value: profile.email, icon: Mail, accent: "text-indigo-600" },
     {
       label: t("profile_label_phone"),
       value: profile.phone_number || t("common_no_data"),
@@ -180,15 +179,11 @@ export default function ProfileCard() {
   ];
 
   return (
-    <div className="py-8 px-4 sm:py-10 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="py-4 px-3 sm:py-6 sm:px-4 lg:px-6">
+      <div className="max-w-xl mx-auto space-y-4">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          <div className="bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-6 py-8 sm:px-8 sm:py-10 text-white">
+          <div className="bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-4 py-5 sm:px-6 sm:py-6 text-white">
             <div className="flex flex-col md:flex-row md:items-center gap-6">
-              {/* <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-white/20 border border-white/30 backdrop-blur flex items-center justify-center text-2xl sm:text-3xl font-bold">
-                {initials}
-              </div> */}
-
               <div className="flex-1 space-y-3">
                 <div className="flex flex-wrap items-center gap-3">
                   <h1 className="text-2xl sm:text-3xl font-bold text-white">{profile.name || t("profile_name_fallback")}</h1>
@@ -215,7 +210,7 @@ export default function ProfileCard() {
             </div>
           </div>
 
-          <div className="px-6 py-8 sm:px-8 sm:py-10 space-y-8">
+          <div className="px-4 py-5 sm:px-6 sm:py-6 space-y-5">
             <div className="grid gap-4 md:grid-cols-2">
               {infoItems.map(({ label, value, icon: Icon, accent }) => (
                 <div key={label} className="rounded-2xl border border-gray-100 p-4">
@@ -230,17 +225,11 @@ export default function ProfileCard() {
               ))}
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4">
               <div className="rounded-2xl border border-gray-100 p-4 sm:p-5 bg-white">
                 <p className="text-xs uppercase tracking-wide text-gray-500">{t("profile_registered_at")}</p>
                 <p className="mt-2 text-base sm:text-lg font-semibold text-gray-900">
                   {profile.created_at ? formatDate(profile.created_at, currentLocale) : t("common_no_data")}
-                </p>
-              </div>
-              <div className="rounded-2xl border border-gray-100 p-4 sm:p-5 bg-white">
-                <p className="text-xs uppercase tracking-wide text-gray-500">{t("profile_telegram_id")}</p>
-                <p className="mt-2 text-base sm:text-lg font-semibold text-gray-900">
-                  {profile.telegram_id || t("common_no_data")}
                 </p>
               </div>
             </div>

@@ -25,13 +25,6 @@ export default function App() {
         if (typeof window === 'undefined') {
           return;
         }
-
-        const tg = window.Telegram && window.Telegram.WebApp;
-        if (!tg) {
-          // Oddiy browserda - bu normal holat, xato emas
-          return;
-        }
-
         let urlPhoneNumber = null;
 
         try {
@@ -70,6 +63,12 @@ export default function App() {
         const hasToken = !!localStorage.getItem('access_token');
         if (hasToken) {
           console.log("[Telegram] Token mavjud, auto-login kerak emas.");
+          return;
+        }
+
+        const tg = window.Telegram && window.Telegram.WebApp;
+        if (!tg) {
+          // Oddiy browserda - bu normal holat, xato emas
           return;
         }
 
