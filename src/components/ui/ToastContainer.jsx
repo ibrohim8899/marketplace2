@@ -11,16 +11,16 @@ export default function ToastContainer({ toasts, onClose }) {
   if (!toasts || toasts.length === 0) return null;
 
   return (
-    <div className="fixed inset-x-0 top-4 z-[9999] flex flex-col items-center gap-3 pointer-events-none">
+    <div className="fixed inset-x-0 top-4 z-[9999] flex flex-col items-center gap-3 px-4 sm:px-6 pointer-events-none">
       {toasts.map((toast) => {
         const Icon = iconByType[toast.type] || Info;
         return (
           <div
             key={toast.id}
-            className="pointer-events-auto w-full max-w-md shadow-lg rounded-2xl border border-gray-200 bg-white/95 text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-50 px-4 py-3 flex items-start gap-3 transform transition-all duration-300 animate-slide-in backdrop-blur-sm"
+            className="pointer-events-auto w-full max-w-md shadow-lg rounded-2xl border border-gray-200 bg-white/95 text-gray-900 dark:border-gray-700 dark:bg-slate-900/95 dark:text-gray-50 px-4 py-3 flex items-start gap-3 transform transition-all duration-300 animate-slide-in backdrop-blur-sm"
           >
             <div className="mt-0.5 flex-shrink-0">
-              <Icon className="w-5 h-5 text-gray-700" />
+              <Icon className="w-5 h-5 text-gray-700 dark:text-gray-100" />
             </div>
             <div className="flex-1 min-w-0">
               {toast.title && (

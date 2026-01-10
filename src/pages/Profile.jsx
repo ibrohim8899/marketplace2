@@ -39,6 +39,9 @@ export default function ProfileCard() {
   const [hasToken, setHasToken] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [becomingSeller, setBecomingSeller] = useState(false);
+  const [switchCooldownUntil, setSwitchCooldownUntil] = useState(null);
+  const [switchingToClient, setSwitchingToClient] = useState(false);
+  const [now, setNow] = useState(Date.now());
   const { t, lang } = useLanguage();
 
   const localeMap = {
@@ -96,6 +99,28 @@ export default function ProfileCard() {
       window.removeEventListener("auth_updated", handleAuthUpdated);
     };
   }, [t]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const raw = localStorage.getItem("role_switch_cooldown_until");
+      if (raw) {
+        const ts = Number(raw);
+        if (!Number.isNaN(ts)) {
+          setSwitchCooldownUntil(ts);
+        }
+      }
+    } catch (err) {
+      console.error("[Profile] Cooldown timestampni o'qib bo'lmadi:", err);
+    }
+
+    const id = setInterval(() => {
+      setNow(Date.now());
+    }, 60 * 1000);
+
+    return () => clearInterval(id);
+  }, []);
 
   const handleLogin = () => {
     navigate("/login");
@@ -179,9 +204,11 @@ export default function ProfileCard() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user_profile");
+    localStorage.removeItem("role_switch_cooldown_until");
     setProfile(null);
     setHasToken(false);
     setShowLogoutConfirm(false);
+    setSwitchCooldownUntil(null);
   };
 
   const handleLogoutClick = () => {
@@ -214,6 +241,14 @@ export default function ProfileCard() {
       const { data } = await axiosInstance.get("/user/profile/");
       setProfile(data);
 
+      const cooldownUntil = Date.now() + 2 * 60 * 60 * 1000; // 2 soat
+      setSwitchCooldownUntil(cooldownUntil);
+      try {
+        localStorage.setItem("role_switch_cooldown_until", String(cooldownUntil));
+      } catch (err) {
+        console.error("[Profile] Cooldown timestampni saqlab bo'lmadi:", err);
+      }
+
       try {
         localStorage.setItem("user_profile", JSON.stringify(data));
       } catch (err) {
@@ -235,6 +270,60 @@ export default function ProfileCard() {
   };
 
   const isSeller = profile.role === "seller";
+  const isSwitchDisabled = !!switchCooldownUntil && now < switchCooldownUntil;
+
+  const handleSwitchToClient = async () => {
+    if (!profile || switchingToClient || isSwitchDisabled) return;
+
+    const uid =
+      profile.uid ||
+      profile.user_uid ||
+      profile.id ||
+      profile.user?.uid ||
+      profile.user?.id ||
+      null;
+
+    if (!uid) {
+      console.error("[Profile] Foydalanuvchi UID topilmadi, clientga o'tkazib bo'lmadi.");
+      return;
+    }
+
+    try {
+      setSwitchingToClient(true);
+
+      await axiosInstance.patch(`/user/users/${uid}/update/`, {
+        role: "client",
+      });
+
+      const { data } = await axiosInstance.get("/user/profile/");
+      setProfile(data);
+
+      try {
+        localStorage.setItem("user_profile", JSON.stringify(data));
+      } catch (err) {
+        console.error("[Profile] Client profilni localStorage'ga saqlab bo'lmadi:", err);
+      }
+
+      try {
+        localStorage.removeItem("role_switch_cooldown_until");
+        setSwitchCooldownUntil(null);
+      } catch (err) {
+        console.error("[Profile] Cooldownni tozalab bo'lmadi:", err);
+      }
+
+      try {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("auth_updated"));
+        }
+      } catch (e) {
+        console.error("[Profile] auth_updated eventini yuborib bo'lmadi (client):", e);
+      }
+    } catch (err) {
+      console.error("[Profile] Clientga o'tishda xatolik:", err.response?.data || err.message);
+    } finally {
+      setSwitchingToClient(false);
+    }
+  };
 
   return (
     <div className="bg-white px-3 pt-2 pb-3 overflow-hidden">
@@ -346,11 +435,22 @@ export default function ProfileCard() {
                 {t("profile_become_seller")}
               </button>
             )}
+
+            {isSeller && (
+              <button
+                type="button"
+                onClick={handleSwitchToClient}
+                disabled={switchingToClient || isSwitchDisabled}
+                className="w-full bg-slate-800 hover:bg-slate-900 disabled:bg-slate-700 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all text-sm"
+              >
+                <User className="w-5 h-5" />
+                {t("profile_switch_to_client")}
+              </button>
+            )}
+
             <button
               onClick={handleLogoutClick}
-              className={`w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 hover:shadow-rose-500/30 transition-all text-sm ${
-                isSeller ? "col-span-2" : ""
-              }`}
+              className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 hover:shadow-rose-500/30 transition-all text-sm"
             >
               <LogOut className="w-5 h-5" />
               {t("profile_logout")}
