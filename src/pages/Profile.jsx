@@ -188,8 +188,8 @@ export default function ProfileCard() {
   };
 
   return (
-    <div className="bg-white px-3 pt-2 pb-3">
-      <div className="space-y-3">
+    <div className="bg-white px-3 pt-2 pb-3 overflow-hidden">
+      <div className="space-y-3 overflow-hidden">
         <div className="rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-4 py-4 sm:px-5 sm:py-5 text-white">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">
