@@ -1,5 +1,7 @@
 // src/components/review/ReviewList.jsx
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import { getComments, deleteComment, updateComment } from '../../api/comments';
 import axiosInstance from '../../api/axiosInstance';
 import { useNotification } from '../../context/NotificationContext';
@@ -8,6 +10,7 @@ import { useLanguage } from '../../context/LanguageContext';
 
 export default function ReviewList({ productId, onCommentDeleted }) {
   const [comments, setComments] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState(null);
   const [editingId, setEditingId] = useState(null);
@@ -16,6 +19,7 @@ export default function ReviewList({ productId, onCommentDeleted }) {
   const [expandedIds, setExpandedIds] = useState([]);
   const { showNotification } = useNotification();
   const { t } = useLanguage();
+  const navigate = useNavigate();
 
   const fetchComments = async () => {
     setLoading(true);
@@ -28,6 +32,52 @@ export default function ReviewList({ productId, onCommentDeleted }) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOpenUserProfile = (comment) => {
+    if (!comment) return;
+
+    const displayName =
+      comment.owner_name ||
+      `${comment.user?.first_name || ''} ${comment.user?.last_name || comment.user?.email || ''}`.trim() ||
+      'Noma\'lum';
+
+    const username =
+      comment.owner_username ||
+      comment.user?.username ||
+      null;
+
+    const telegramUsername =
+      comment.owner_telegram_username ||
+      comment.user?.telegram_username ||
+      null;
+
+    const telegramId =
+      comment.owner_telegram_id ||
+      comment.user?.telegram_id ||
+      null;
+
+    const userId =
+      comment.owner_uid ||
+      comment.owner_id ||
+      comment.owner?.uid ||
+      comment.user_id ||
+      comment.user?.uid ||
+      comment.user?.id ||
+      comment.user?.email ||
+      displayName;
+
+    const user = {
+      id: userId,
+      name: displayName,
+      username: username || telegramUsername || null,
+      telegram_username: telegramUsername,
+      telegram_id: telegramId,
+      lastActivity: comment.created_at,
+    };
+
+    const slug = encodeURIComponent(String(userId || 'user'));
+    navigate(`/user/${slug}`, { state: { user } });
   };
 
   useEffect(() => {
@@ -190,9 +240,14 @@ export default function ReviewList({ productId, onCommentDeleted }) {
                     {comment.owner_name?.charAt(0) || comment.user?.first_name?.charAt(0) || comment.user?.email?.charAt(0) || 'U'}
                   </div>
                   <div>
-                    <div className="font-semibold text-gray-800">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenUserProfile(comment)}
+                      className="font-semibold text-gray-800 hover:text-blue-600 focus:outline-none text-left"
+                    >
                       {comment.owner_name || `${comment.user?.first_name} ${comment.user?.last_name || comment.user?.email}` || 'Noma\'lum'}
-                    </div>
+                    </button>
+
                     <p className="text-xs text-gray-500">
                       {new Date(comment.created_at).toLocaleDateString('uz-UZ')}
                     </p>

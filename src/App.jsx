@@ -7,6 +7,7 @@ import SellerDashboard from './components/seller/SellerDashboard';
 import TopSellers from './pages/TopSellers';
 import SearchResults from './pages/SearchResults';
 import ProfileCard from './pages/Profile';
+import PublicProfile from './pages/PublicProfile';
 import LoginPage from './pages/LoginPage';
 import Breadcrumb from './components/layout/Breadcrumb';
 import NotFound from './pages/404';
@@ -146,6 +147,7 @@ export default function App() {
         {/* <Route path="/top-sellers" element={<TopSellers />} /> */}
         <Route path="/search" element={<SearchResults />} />
         <Route path="/profile" element={<ProfileCard />} />
+        <Route path="/user/:id" element={<PublicProfile />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/cart" element={<Cart />} /> 
         <Route path="/wishlist" element={<Wishlist />} /> 
