@@ -142,7 +142,7 @@ export default function ProfileCard() {
 
   if (!hasToken || !profile) {
     return (
-      <div className=" px-4 py-8 bg-gray-50">
+      <div className="px-4 py-8 bg-gray-50">
         <div className="max-w-md mx-auto">{renderEmptyState()}</div>
       </div>
     );
@@ -157,6 +157,14 @@ export default function ProfileCard() {
         .toUpperCase()
     : profile.email?.[0]?.toUpperCase() || "U";
 
+  const avatarUrl =
+    profile.photo ||
+    profile.avatar ||
+    profile.image ||
+    profile.profile_image ||
+    profile.picture ||
+    null;
+
   const infoItems = [
     {
       label: t("profile_label_phone"),
@@ -167,19 +175,32 @@ export default function ProfileCard() {
 
     {
       label: t("profile_label_username"),
-      value: profile.username || t("common_no_data"),
+      value: profile.username ? `@${profile.username}` : t("common_no_data"),
       icon: User,
       accent: "text-slate-600",
-    }
+    },
   ];
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-white px-3 pt-3 pb-4">
+    <div className="bg-white px-3 pt-2 pb-3">
       <div className="space-y-3">
         <div className="rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-4 py-4 sm:px-5 sm:py-5 text-white">
-          <div className="flex flex-col gap-4">
-            <div className="space-y-2">
-              <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">
+              {avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={profile.name || t("profile_name_fallback")}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-lg font-semibold">
+                  {initials}
+                </span>
+              )}
+            </div>
+            <div className="flex-1 space-y-1">
+              <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-2xl sm:text-3xl font-bold text-white">
                   {profile.name || t("profile_name_fallback")}
                 </h1>
