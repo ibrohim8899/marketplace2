@@ -23,21 +23,6 @@ export default function Breadcrumb() {
     ? pathnames[categoryIndex + 1]
     : null;
 
-  // Public user profile (/user/:id) uchun segmentlar
-  const userIndex = pathnames.indexOf('user');
-  const userUid = userIndex !== -1 && pathnames[userIndex + 1]
-    ? pathnames[userIndex + 1]
-    : null;
-
-  // location.state orqali kelgan foydalanuvchi ma'lumotlari (ReviewList dan navigate qilinadi)
-  const publicUser = location.state && location.state.user ? location.state.user : null;
-  const publicUsernameRaw = publicUser
-    ? (publicUser.username || publicUser.telegram_username || publicUser.owner_name || '')
-    : '';
-  const publicUsername = publicUsernameRaw
-    ? (publicUsernameRaw.startsWith('@') ? publicUsernameRaw : `@${publicUsernameRaw}`)
-    : '';
-
   useEffect(() => {
     const loadProductName = async () => {
       try {
@@ -145,11 +130,6 @@ export default function Breadcrumb() {
       // Mahsulotga link - /product/:uid formatida
       linkTo = `/product/${segment}`;
     }
-    // Public user profile UID uchun (/user/:id)
-    else if (prevSegment === 'user' && segment === userUid) {
-      displayName = publicUsername || segment;
-      linkTo = `/user/${segment}`;
-    }
     // Boshqa parametrlar uchun
     else if (pageNames[segment]) {
       displayName = pageNames[segment];
@@ -167,9 +147,6 @@ export default function Breadcrumb() {
     } else if (isLast && categoryUid && segment === categoryUid) {
       displayName = categoryName || t('breadcrumb_category');
       linkTo = `/category/${segment}`;
-    } else if (isLast && userUid && segment === userUid && publicUsername) {
-      displayName = publicUsername;
-      linkTo = `/user/${segment}`;
     }
 
     return { displayName, linkTo, shouldHideFromPath, isClickable };

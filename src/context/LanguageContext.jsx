@@ -167,15 +167,6 @@ const translations = {
     wishlist_empty_desc: "Yoqtirgan mahsulotlaringizni saqlab qo'ying!",
     view_products: "Mahsulotlarni ko'rish",
     wishlist_title: 'Sevimlilar',
-    public_profile_title: 'Foydalanuvchi profili',
-    public_profile_back: 'Orqaga qaytish',
-    public_profile_send_message: 'Xabar yuborish',
-    public_profile_not_available: "Foydalanuvchi ma'lumotlari mavjud emas",
-    public_profile_last_activity: 'Oxirgi faoliyat:',
-    public_profile_about: 'Profil haqida',
-    public_profile_about_placeholder: "Bu foydalanuvchi haqida qo'shimcha ma'lumot mavjud emas.",
-    public_profile_default_message:
-      "Salom! Sizning profilingizni marketplace orqali ko'rdim va yozmoqchi edim.",
   },
   ru: {
     nav_seller: 'Продавец',
@@ -325,15 +316,6 @@ const translations = {
     wishlist_empty_desc: 'Сохраняйте понравившиеся товары!',
     view_products: 'Посмотреть товары',
     wishlist_title: 'Избранное',
-    public_profile_title: 'Профиль пользователя',
-    public_profile_back: 'Назад',
-    public_profile_send_message: 'Написать сообщение',
-    public_profile_not_available: 'Информация о пользователе недоступна',
-    public_profile_last_activity: 'Последняя активность:',
-    public_profile_about: 'О профиле',
-    public_profile_about_placeholder: 'Дополнительная информация о пользователе отсутствует.',
-    public_profile_default_message:
-      'Здравствуйте! Я увидел(а) ваш профиль через маркетплейс и хотел(а) написать.',
   },
   en: {
     nav_seller: 'Seller',
@@ -483,15 +465,6 @@ const translations = {
     wishlist_empty_desc: 'Save products you like!',
     view_products: 'Browse products',
     wishlist_title: 'Wishlist',
-    public_profile_title: 'User profile',
-    public_profile_back: 'Go back',
-    public_profile_send_message: 'Send message',
-    public_profile_not_available: 'User information is not available',
-    public_profile_last_activity: 'Last activity:',
-    public_profile_about: 'About profile',
-    public_profile_about_placeholder: 'There is no additional information about this user.',
-    public_profile_default_message:
-      'Hello! I saw your profile via the marketplace and wanted to message you.',
   },
 };
 
