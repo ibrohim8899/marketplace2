@@ -37,6 +37,7 @@ export default function ProfileCard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [hasToken, setHasToken] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { t, lang } = useLanguage();
 
   const localeMap = {
@@ -156,8 +157,6 @@ export default function ProfileCard() {
     profile.profile_image ||
     profile.picture ||
     null;
-
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const infoItems = [
     {
