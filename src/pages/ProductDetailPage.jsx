@@ -185,7 +185,7 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gray-50 dark:bg-slate-950 pb-20">
+    <div className="min-h-[calc(100vh-80px)] bg-white dark:bg-slate-950 pb-20">
       {/* RASMLAR GALEREYASI */}
       <div className="relative bg-white dark:bg-slate-900">
         <div className="relative group cursor-pointer" onClick={handleImageClick}>

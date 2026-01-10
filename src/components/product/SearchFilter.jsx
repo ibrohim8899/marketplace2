@@ -61,7 +61,7 @@ export default function SearchFilter({ initialQuery = '', initialMin = '', initi
   return (
     <form
       onSubmit={handleSearch}
-      className="bg-gray-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm px-4 sm:px-6 py-4 sm:py-5 space-y-4"
+      className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm px-4 sm:px-6 py-4 sm:py-5 space-y-4"
     >
       {/* Search Bar */}
       <div className="flex flex-col sm:flex-row gap-3">

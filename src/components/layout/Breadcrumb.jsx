@@ -153,7 +153,7 @@ export default function Breadcrumb() {
   };
 
   return (
-    <nav className="bg-gray-50 dark:bg-slate-950/95">
+    <nav className="bg-white dark:bg-slate-950/95">
 
       <div className="max-w-screen-md mx-auto px-4 border-b border-gray-200 dark:border-slate-800">
 
