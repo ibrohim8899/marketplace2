@@ -1,5 +1,6 @@
 // src/components/layout/Navbar.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
 import { Link } from 'react-router-dom';
 import { Moon, Sun, ChevronDown } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
@@ -10,6 +11,39 @@ export default function Navbar() {
   const isDark = theme === 'dark';
   const { lang, setLang, t } = useLanguage();
   const [open, setOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const loadRole = () => {
+      try {
+        const raw = localStorage.getItem('user_profile');
+        if (!raw) {
+          setUserRole(null);
+          return;
+        }
+
+        const data = JSON.parse(raw);
+        const role =
+          data?.role ||
+          data?.user_role ||
+          data?.profile?.role ||
+          null;
+
+        setUserRole(role || null);
+      } catch (err) {
+        console.error('[Navbar] user_profile parse error:', err);
+        setUserRole(null);
+      }
+    };
+
+    loadRole();
+
+    const handler = () => loadRole();
+    window.addEventListener('auth_updated', handler);
+    return () => window.removeEventListener('auth_updated', handler);
+  }, []);
 
   const languages = [
     { code: 'uz', label: "O'zbek" },
@@ -18,6 +52,7 @@ export default function Navbar() {
   ];
 
   const current = languages.find((item) => item.code === lang) || languages[0];
+  const isSeller = userRole === 'seller';
 
   const handleSelect = (code) => {
     setLang(code);
@@ -30,7 +65,10 @@ export default function Navbar() {
         <Link to="/" className="text-sm font-bold text-blue-600">TechGigs MP</Link>
 
         <div className="flex items-center gap-4 text-sm font-medium">
-          <Link to="/seller" className="hover:text-blue-600">{t('nav_seller')}</Link>
+          {isSeller && (
+            <Link to="/seller" className="hover:text-blue-600">{t('nav_seller')}</Link>
+          )}
+
           {/* <Link to="/top-sellers" className="hover:text-blue-600">Top Sotuvchilar</Link> */}
 
           <div className="relative">

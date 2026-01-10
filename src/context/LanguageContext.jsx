@@ -97,6 +97,7 @@ const translations = {
     profile_telegram_id: 'Telegram ID',
     profile_extra_info_title: "Qo'shimcha ma'lumotlar",
     profile_logout: 'Chiqish',
+    profile_become_seller: "Sotuvchi bo'lish",
     profile_logout_confirm_title: "Haqiqatan ham chiqmoqchimisiz?",
     profile_logout_confirm_description: "Siz marketplace hisobingizdan chiqmoqchisiz.",
     profile_logout_info_description:
@@ -246,6 +247,7 @@ const translations = {
     profile_telegram_id: 'Telegram ID',
     profile_extra_info_title: 'Дополнительная информация',
     profile_logout: 'Выйти',
+    profile_become_seller: 'Стать продавцом',
     profile_logout_confirm_title: 'Вы действительно хотите выйти?',
     profile_logout_confirm_description: 'Вы собираетесь выйти из своего аккаунта маркетплейса.',
     profile_logout_info_description:
@@ -395,6 +397,7 @@ const translations = {
     profile_telegram_id: 'Telegram ID',
     profile_extra_info_title: 'Additional information',
     profile_logout: 'Log out',
+    profile_become_seller: 'Become a seller',
     profile_logout_confirm_title: 'Are you sure you want to log out?',
     profile_logout_confirm_description: 'You are about to log out from your marketplace account.',
     profile_logout_info_description:

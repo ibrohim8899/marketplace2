@@ -38,6 +38,7 @@ export default function ProfileCard() {
   const [error, setError] = useState("");
   const [hasToken, setHasToken] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [becomingSeller, setBecomingSeller] = useState(false);
   const { t, lang } = useLanguage();
 
   const localeMap = {
@@ -187,6 +188,54 @@ export default function ProfileCard() {
     setShowLogoutConfirm(true);
   };
 
+  const handleBecomeSeller = async () => {
+    if (!profile || becomingSeller) return;
+
+    const uid =
+      profile.uid ||
+      profile.user_uid ||
+      profile.id ||
+      profile.user?.uid ||
+      profile.user?.id ||
+      null;
+
+    if (!uid) {
+      console.error("[Profile] Foydalanuvchi UID topilmadi, sotuvchi bo'lishni amalga oshirib bo'lmadi.");
+      return;
+    }
+
+    try {
+      setBecomingSeller(true);
+
+      await axiosInstance.patch(`/user/users/${uid}/update/`, {
+        role: "seller",
+      });
+
+      const { data } = await axiosInstance.get("/user/profile/");
+      setProfile(data);
+
+      try {
+        localStorage.setItem("user_profile", JSON.stringify(data));
+      } catch (err) {
+        console.error("[Profile] Yangilangan profilni localStorage'ga saqlab bo'lmadi:", err);
+      }
+
+      try {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("auth_updated"));
+        }
+      } catch (e) {
+        console.error("[Profile] auth_updated eventini yuborib bo'lmadi:", e);
+      }
+    } catch (err) {
+      console.error("[Profile] Sotuvchi bo'lishda xatolik:", err.response?.data || err.message);
+    } finally {
+      setBecomingSeller(false);
+    }
+  };
+
+  const isSeller = profile.role === "seller";
+
   return (
     <div className="bg-white px-3 pt-2 pb-3 overflow-hidden">
       <div className="space-y-3 overflow-hidden">
@@ -285,13 +334,28 @@ export default function ProfileCard() {
         </div>
 
         <div>
-          <button
-            onClick={handleLogoutClick}
-            className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 hover:shadow-rose-500/30 transition-all text-sm"
-          >
-            <LogOut className="w-5 h-5" />
-            {t("profile_logout")}
-          </button>
+          <div className="grid grid-cols-2 gap-3">
+            {!isSeller && (
+              <button
+                type="button"
+                onClick={handleBecomeSeller}
+                disabled={becomingSeller}
+                className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-400 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all text-sm"
+              >
+                <ShieldCheck className="w-5 h-5" />
+                {t("profile_become_seller")}
+              </button>
+            )}
+            <button
+              onClick={handleLogoutClick}
+              className={`w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 hover:shadow-rose-500/30 transition-all text-sm ${
+                isSeller ? "col-span-2" : ""
+              }`}
+            >
+              <LogOut className="w-5 h-5" />
+              {t("profile_logout")}
+            </button>
+          </div>
         </div>
 
         {showLogoutConfirm && (

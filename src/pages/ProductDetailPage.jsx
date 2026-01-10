@@ -106,6 +106,25 @@ export default function ProductDetailPage() {
     product.owner?.username ||
     t('not_available');
 
+  const isUuidLike = (value) =>
+    typeof value === "string" &&
+    value.length > 20 &&
+    value.includes("-");
+
+  let rawCategory = "";
+  const categoryValue = product.category;
+
+  if (typeof categoryValue === "string") {
+    rawCategory = categoryValue;
+  } else if (categoryValue && typeof categoryValue === "object") {
+    rawCategory = categoryValue.name || categoryValue.title || "";
+  } else if (product.category_name) {
+    rawCategory = product.category_name;
+  }
+
+  const safeCategory =
+    rawCategory && !isUuidLike(rawCategory) ? rawCategory : "";
+
   const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % images.length);
   const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   const handleImageClick = () => setIsZoomModalOpen(true);
@@ -270,7 +289,7 @@ export default function ProductDetailPage() {
           <div className="flex flex-wrap items-center gap-4 text-sm">
             <Badge variant="secondary" className="flex items-center gap-1">
               <Package className="w-4 h-4" />
-              {product.category || t('category_label')}
+              {safeCategory || t('category_label')}
             </Badge>
 
             {(product.rating || product.rating === 0) && (
