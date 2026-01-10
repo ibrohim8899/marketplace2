@@ -71,7 +71,7 @@ export default function SearchResults() {
           </div>
 
           {/* Natijalar ro'yxati */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-sm p-4">
             <ProductList searchQuery={searchQuery} categoryFilter={categoryFilter} priceRange={priceRange} locationFilter={locationFilter} />
           </div>
         </div>

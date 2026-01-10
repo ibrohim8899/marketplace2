@@ -65,7 +65,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-gray-50 flex items-center justify-center px-3 py-4">
+    <div className="bg-gray-50 dark:bg-slate-950 flex items-center justify-center px-3 py-4">
       <div className="w-full max-w-sm">
         {/* Orqaga qaytish tugmasi */}
         <Link

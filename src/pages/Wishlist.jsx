@@ -10,7 +10,7 @@ export default function Wishlist() {
 
   if (wishlist.length === 0) {
     return (
-      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-8 bg-gray-50">
+      <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-8 bg-gray-50 dark:bg-slate-950">
         <div className="text-center space-y-5">
           <div className="w-24 h-24 mx-auto bg-gradient-to-br from-pink-100 to-red-100 rounded-full flex items-center justify-center">
             <Heart className="w-12 h-12 text-red-400" />

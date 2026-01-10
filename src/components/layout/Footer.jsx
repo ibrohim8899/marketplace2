@@ -11,11 +11,11 @@ export default function Footer() {
   const cartCount = getTotalItems();
   const wishlistCount = wishlist.length;
 
-  const activeClass = "text-blue-600";
-  const defaultClass = "text-gray-600";
+  const activeClass = "text-blue-600 dark:text-blue-400";
+  const defaultClass = "text-gray-600 dark:text-slate-300";
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-20 transition-colors duration-300">
+    <footer className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 shadow-lg border-t border-gray-200 dark:border-slate-800 z-20 backdrop-blur transition-colors duration-300">
       <div className="max-w-screen-md mx-auto px-2 py-2">
         <div className="flex justify-around items-center">
           {/* Bosh sahifa */}

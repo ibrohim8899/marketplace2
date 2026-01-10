@@ -66,7 +66,7 @@ export default function ReviewForm({ productId, onAdded }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-4 rounded-lg">
+    <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 dark:bg-slate-900 p-4 rounded-lg">
       {error && <div className="text-red-600 text-sm">{error}</div>}
       
       <textarea

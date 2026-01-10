@@ -37,12 +37,12 @@ export default function TestLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-slate-950 p-4">
+      <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">{t('testlogin_title')}</h2>
 
         
-        {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
+        {error && <div className="bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-400 p-3 rounded mb-4">{error}</div>}
         
         <form onSubmit={handleLogin} className="space-y-4">
           <div>

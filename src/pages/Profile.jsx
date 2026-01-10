@@ -150,7 +150,7 @@ export default function ProfileCard() {
 
   if (loading) {
     return (
-      <div className="min-h-[calc(100vh-80px)] bg-gray-50 flex items-center justify-center">
+      <div className="min-h-[calc(100vh-80px)] bg-gray-50 dark:bg-slate-950 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3 text-indigo-600">
           <Loader2 className="w-10 h-10 animate-spin" />
           <p className="text-sm font-medium">{t("profile_loading")}</p>
@@ -161,7 +161,7 @@ export default function ProfileCard() {
 
   if (!hasToken || !profile) {
     return (
-      <div className="px-4 py-8 bg-gray-50">
+      <div className="px-4 py-8 bg-gray-50 dark:bg-slate-950">
         <div className="max-w-md mx-auto">{renderEmptyState()}</div>
       </div>
     );

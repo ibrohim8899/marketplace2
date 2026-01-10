@@ -285,7 +285,7 @@ export default function SellerDashboard() {
 
   if (!isLoggedIn) {
     return (
-      <div className="min-h-[calc(100vh-80px)] bg-gray-50 px-4 py-8 flex items-center justify-center">
+      <div className="min-h-[calc(100vh-80px)] bg-gray-50 dark:bg-slate-950 px-4 py-8 flex items-center justify-center">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-md p-6 space-y-4 text-center">
           <h1 className="text-2xl font-bold text-gray-900">{t('seller_login_required_title')}</h1>
           <p className="text-sm text-gray-600">
@@ -311,7 +311,7 @@ export default function SellerDashboard() {
   }
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gray-50 px-4 py-6">
+    <div className="min-h-[calc(100vh-80px)] bg-gray-50 dark:bg-slate-950 px-4 py-6">
       <div className="max-w-5xl mx-auto">
         {/* Sarlavha */}
         <div className="text-center mb-10">
@@ -565,7 +565,7 @@ export default function SellerDashboard() {
               {myProducts.map((p) => (
                 <div
                   key={p.uid || p.id}
-                  className="border border-gray-100 rounded-2xl p-4 flex items-start justify-between bg-gray-50/60 hover:bg-white hover:shadow-md transition-all"
+                  className="border border-gray-100 dark:border-slate-700 rounded-2xl p-4 flex items-start justify-between bg-gray-50/60 dark:bg-slate-900/80 hover:bg-white dark:hover:bg-slate-800 hover:shadow-md transition-all"
                 >
                   <div className="pr-3">
                     <h3 className="text-sm font-semibold text-gray-900 line-clamp-1">

@@ -60,11 +60,12 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-20 transition-colors duration-300">
+    <nav className="fixed top-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 border-b border-gray-200 dark:border-slate-800 z-20 backdrop-blur transition-colors duration-300">
       <div className="max-w-screen-md mx-auto px-4 py-3 flex justify-between items-center">
         <Link to="/" className="text-sm font-bold text-blue-600">TechGigs MP</Link>
 
         <div className="flex items-center gap-4 text-sm font-medium">
+
           {isSeller && (
             <Link to="/seller" className="hover:text-blue-600">{t('nav_seller')}</Link>
           )}
@@ -75,44 +76,48 @@ export default function Navbar() {
             <button
               type="button"
               onClick={() => setOpen((prev) => !prev)}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 transition-all duration-150"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800 transition-all duration-150"
             >
               <span className="text-xs font-medium">{current.label}</span>
               <ChevronDown
                 className={`w-3 h-3 transition-transform duration-150 ${open ? 'rotate-180' : ''}`}
+
               />
             </button>
 
             <div
-              className={`absolute right-0 mt-2 w-32 rounded-lg border border-gray-200 bg-white shadow-lg overflow-hidden transition-all duration-150 origin-top-right ${
+              className={`absolute right-0 mt-2 w-32 rounded-lg border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-900 shadow-lg overflow-hidden transition-all duration-150 origin-top-right ${
                 open ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-1 pointer-events-none'
               }`}
             >
               {languages.map((item) => (
+
                 <button
                   key={item.code}
                   type="button"
                   onClick={() => handleSelect(item.code)}
                   className={`w-full text-left px-3 py-1.5 text-xs transition-colors ${
                     lang === item.code
-                      ? 'bg-blue-50 text-blue-700'
-                      : 'bg-white text-gray-700 hover:bg-gray-100'
+                      ? 'bg-blue-50 text-blue-700 dark:bg-blue-500/20 dark:text-blue-200'
+                      : 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-slate-900 dark:text-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
                   {item.label}
                 </button>
               ))}
+
             </div>
           </div>
 
           <button
             type="button"
             onClick={toggleTheme}
-            className="p-2 rounded-full border border-gray-200 bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200"
+            className="p-2 rounded-full border border-gray-200 bg-gray-100 text-gray-700 hover:bg-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 transition-colors duration-200"
             aria-label={t('nav_toggle_theme')}
           >
             {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
+
         </div>
       </div>
     </nav>
