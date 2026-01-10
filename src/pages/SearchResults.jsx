@@ -22,15 +22,15 @@ export default function SearchResults() {
       <Container>
         <div className="py-4 space-y-6">
           {/* Qidiruv sarlavhasi va izoh */}
-          <div>
+          {/* <div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
               {t('search_results_title')}
             </h1>
-          </div>
+          </div> */}
 
           {/* Qidiruv va filter paneli */}
           <div className="space-y-4">
-            <div className="w-full bg-gray-50 border border-slate-200 rounded-2xl shadow-sm px-4 sm:px-6 py-3.5 sm:py-4 flex items-center gap-3">
+            {/* <div className="w-full bg-gray-50 border border-slate-200 rounded-2xl shadow-sm px-4 sm:px-6 py-3.5 sm:py-4 flex items-center gap-3">
               <span className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-indigo-50 text-indigo-600 mr-1">
                 <svg
                   className="w-4 h-4"
@@ -58,7 +58,7 @@ export default function SearchResults() {
               <span className="hidden sm:inline-flex text-xs font-medium text-gray-500 px-3 py-1 rounded-full bg-gray-100">
                 {t('search_results_hint')}
               </span>
-            </div>
+            </div> */}
 
             {/* mavjud filter komponenti */}
             <SearchFilter

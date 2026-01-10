@@ -166,9 +166,9 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-gray-50 pb-20">
+    <div className="min-h-[calc(100vh-80px)] bg-gray-50 dark:bg-slate-950 pb-20">
       {/* RASMLAR GALEREYASI */}
-      <div className="relative bg-white">
+      <div className="relative bg-white dark:bg-slate-900">
         <div className="relative group cursor-pointer" onClick={handleImageClick}>
           <img
             src={
@@ -190,11 +190,23 @@ export default function ProductDetailPage() {
 
           {hasMultipleImages && (
             <>
-              <button onClick={(e) => { e.stopPropagation(); prevImage(); }} className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-xl z-10">
-                <ChevronLeft className="w-6 h-6 text-gray-800" />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  prevImage();
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full p-3 shadow-xl z-10 border border-gray-200 bg-white/90 hover:bg-white/95 backdrop-blur dark:border-slate-700 dark:bg-slate-900/85 dark:hover:bg-slate-800/90"
+             >
+                <ChevronLeft className="w-6 h-6 text-gray-800 dark:text-gray-100" />
               </button>
-              <button onClick={(e) => { e.stopPropagation(); nextImage(); }} className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-3 shadow-xl z-10">
-                <ChevronRight className="w-6 h-6 text-gray-800" />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  nextImage();
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-3 shadow-xl z-10 border border-gray-200 bg-white/90 hover:bg-white/95 backdrop-blur dark:border-slate-700 dark:bg-slate-900/85 dark:hover:bg-slate-800/90"
+              >
+                <ChevronRight className="w-6 h-6 text-gray-800 dark:text-gray-100" />
               </button>
             </>
           )}
@@ -204,8 +216,15 @@ export default function ProductDetailPage() {
               {images.map((_, i) => (
                 <button
                   key={i}
-                  onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(i); }}
-                  className={`transition-all rounded-full ${i === currentImageIndex ? "bg-white w-10 h-2" : "bg-white/60 w-2 h-2"}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentImageIndex(i);
+                  }}
+                  className={`transition-all rounded-full ${
+                    i === currentImageIndex
+                      ? "bg-white dark:bg-slate-100 w-10 h-2"
+                      : "bg-white/60 dark:bg-slate-600 w-2 h-2"
+                  }`}
                 />
               ))}
             </div>
