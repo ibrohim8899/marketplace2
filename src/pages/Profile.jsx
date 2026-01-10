@@ -164,116 +164,103 @@ export default function ProfileCard() {
       icon: Phone,
       accent: "text-emerald-600",
     },
+
     {
       label: t("profile_label_username"),
       value: profile.username || t("common_no_data"),
       icon: User,
       accent: "text-slate-600",
-    },
-    {
-      label: t("profile_label_role"),
-      value: profile.role || t("profile_role_unknown"),
-      icon: ShieldCheck,
-      accent: "text-purple-600",
-    },
+    }
   ];
 
   return (
-    <div className="py-4 px-3 sm:py-6 sm:px-4 lg:px-6">
-      <div className="max-w-xl mx-auto space-y-4">
-        <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-          <div className="bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-4 py-5 sm:px-6 sm:py-6 text-white">
-            <div className="flex flex-col md:flex-row md:items-center gap-6">
-              <div className="flex-1 space-y-3">
-                <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="text-2xl sm:text-3xl font-bold text-white">{profile.name || t("profile_name_fallback")}</h1>
+    <div className="min-h-[calc(100vh-80px)] bg-white px-3 pt-3 pb-4">
+      <div className="space-y-3">
+        <div className="rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-500 px-4 py-4 sm:px-5 sm:py-5 text-white">
+          <div className="flex flex-col gap-4">
+            <div className="space-y-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <h1 className="text-2xl sm:text-3xl font-bold text-white">
+                  {profile.name || t("profile_name_fallback")}
+                </h1>
 
-                  {profile.role && (
-                    <span className="px-3 py-1 rounded-full bg-white/15 text-sm font-semibold">
-                      {profile.role.toUpperCase()}
-                    </span>
-                  )}
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                      profile.is_active
-                        ? "bg-emerald-500/20 text-emerald-100"
-                        : "bg-rose-500/20 text-rose-100"
-                    }`}
-                  >
-                    {profile.is_active ? t("profile_status_active") : t("profile_status_inactive")}
+                {profile.role && (
+                  <span className="px-3 py-1 rounded-full bg-white/15 text-xs font-semibold">
+                    {profile.role.toUpperCase()}
                   </span>
-                </div>
-                <p className="text-white/80 text-sm">
-                  {t("profile_last_activity_label")} {profile.last_login_at ? formatDate(profile.last_login_at, currentLocale) : t("common_no_data")}
-                </p>
+                )}
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                    profile.is_active
+                      ? "bg-emerald-500/20 text-emerald-100"
+                      : "bg-rose-500/20 text-rose-100"
+                  }`}
+                >
+                  {profile.is_active ? t("profile_status_active") : t("profile_status_inactive")}
+                </span>
               </div>
+              <p className="text-white/80 text-xs">
+                {t("profile_last_activity_label")} {" "}
+                {profile.last_login_at ? formatDate(profile.last_login_at, currentLocale) : t("common_no_data")}
+              </p>
             </div>
-          </div>
-
-          <div className="px-4 py-5 sm:px-6 sm:py-6 space-y-5">
-            <div className="grid gap-4 md:grid-cols-2">
-              {infoItems.map(({ label, value, icon: Icon, accent }) => (
-                <div key={label} className="rounded-2xl border border-gray-100 p-4">
-                  <p className="text-xs uppercase tracking-wide text-gray-500 flex items-center gap-2">
-                    <Icon className={`w-4 h-4 ${accent}`} />
-                    {label}
-                  </p>
-                  <p className="mt-2 text-base font-semibold text-gray-900 break-words">
-                    {value || t("common_no_data")}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <div className="grid gap-4">
-              <div className="rounded-2xl border border-gray-100 p-4 sm:p-5 bg-white">
-                <p className="text-xs uppercase tracking-wide text-gray-500">{t("profile_registered_at")}</p>
-                <p className="mt-2 text-base sm:text-lg font-semibold text-gray-900">
-                  {profile.created_at ? formatDate(profile.created_at, currentLocale) : t("common_no_data")}
-                </p>
-              </div>
-            </div>
-
-            {profile.location || profile.address || profile.website ? (
-              <div className="rounded-3xl border border-dashed border-indigo-100 bg-indigo-50/60 p-5 sm:p-6">
-                <h3 className="text-sm font-semibold text-indigo-900 mb-4">{t("profile_extra_info_title")}</h3>
-
-                <div className="space-y-3 text-sm text-indigo-900/90">
-                  {profile.location && (
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      <span>{profile.location}</span>
-                    </div>
-                  )}
-                  {profile.address && (
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
-                      <span>{profile.address}</span>
-                    </div>
-                  )}
-                  {profile.website && (
-                    <div className="flex items-center gap-2">
-                      <Globe className="w-4 h-4" />
-                      <a
-                        href={profile.website.startsWith("http") ? profile.website : `https://${profile.website}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="underline"
-                      >
-                        {profile.website}
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
-            ) : null}
           </div>
         </div>
 
-        <div className="flex">
+        <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            {infoItems.map(({ label, value, icon: Icon, accent }) => (
+              <div key={label} className="rounded-2xl border border-gray-100 p-3">
+                <p className="text-[11px] uppercase tracking-wide text-gray-500 flex items-center gap-2">
+                  <Icon className={`w-4 h-4 ${accent}`} />
+                  {label}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-gray-900 break-words">
+                  {value || t("common_no_data")}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 text-xs text-gray-700">
+            <div className="rounded-2xl border border-gray-100 p-3">
+              <p className="uppercase tracking-wide text-gray-500">
+                {t("profile_registered_at")}
+              </p>
+              <p className="mt-1 font-semibold">
+                {profile.created_at ? formatDate(profile.created_at, currentLocale) : t("common_no_data")}
+              </p>
+            </div>
+
+            {(profile.location || profile.address || profile.website) && (
+              <div className="rounded-2xl border border-gray-100 p-3 space-y-1">
+                {profile.location && (
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    <span className="truncate">{profile.location}</span>
+                  </div>
+                )}
+                {profile.address && (
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    <span className="truncate">{profile.address}</span>
+                  </div>
+                )}
+                {profile.website && (
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4" />
+                    <span className="truncate">{profile.website}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div>
           <button
             onClick={handleLogout}
-            className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-3 rounded-2xl shadow-lg flex items-center justify-center gap-2 hover:shadow-rose-500/40 transition-all"
+            className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 hover:shadow-rose-500/30 transition-all text-sm"
           >
             <LogOut className="w-5 h-5" />
             {t("profile_logout")}
