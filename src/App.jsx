@@ -136,7 +136,7 @@ export default function App() {
   return (
     <CartProvider>
       <Navbar />
-      <div className="min-h-screen bg-gray-50 pt-14 pb-20 transition-colors duration-300">
+      <div className="min-h-screen bg-white dark:bg-slate-950 pt-14 pb-20 transition-colors duration-300">
         <Breadcrumb />
         <Routes>
         <Route path="/" element={<Home />} />
