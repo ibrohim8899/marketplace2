@@ -63,29 +63,38 @@ export default function ProductDetailPage() {
   if (!product) return <EmptyState message={t('product_not_found')} />;
 
   // Backenddan rasm(lar)ni olish (bir nechta mumkin bo'lgan fieldlardan)
-  const images = [];
-  if (product.photo1) images.push(product.photo1);
-  if (product.photo2) images.push(product.photo2);
-  if (product.photo3) images.push(product.photo3);
-  if (product.photo4) images.push(product.photo4);
-  if (product.photo5) images.push(product.photo5);
-  if (product.thumbnail) images.push(product.thumbnail);
-  if (product.photo) images.push(product.photo);
-  if (product.image) images.push(product.image);
-
-  if (Array.isArray(product.images)) {
-    product.images.forEach((img) => {
-      if (typeof img === "string" && img) images.push(img);
-      else if (img && typeof img.url === "string") images.push(img.url);
+  const collectFromArray = (arr) => {
+    const result = [];
+    if (!Array.isArray(arr)) return result;
+    arr.forEach((img) => {
+      if (typeof img === "string" && img) result.push(img);
+      else if (img && typeof img.url === "string") result.push(img.url);
     });
+    return result;
+  };
+
+  let images = [];
+
+  if (Array.isArray(product.photos) && product.photos.length > 0) {
+    // Agar photos massivi bo'lsa, faqat shundan foydalanamiz (dublikat bo'lmasligi uchun)
+    images = collectFromArray(product.photos);
+  } else if (Array.isArray(product.images) && product.images.length > 0) {
+    // Yoki images massividan
+    images = collectFromArray(product.images);
+  } else {
+    // Aks holda alohida photo1..photo5 va boshqa maydonlardan yig'amiz
+    if (product.photo1) images.push(product.photo1);
+    if (product.photo2) images.push(product.photo2);
+    if (product.photo3) images.push(product.photo3);
+    if (product.photo4) images.push(product.photo4);
+    if (product.photo5) images.push(product.photo5);
+    if (product.thumbnail) images.push(product.thumbnail);
+    if (product.photo) images.push(product.photo);
+    if (product.image) images.push(product.image);
   }
 
-  if (Array.isArray(product.photos)) {
-    product.photos.forEach((img) => {
-      if (typeof img === "string" && img) images.push(img);
-      else if (img && typeof img.url === "string") images.push(img.url);
-    });
-  }
+  // Dublikat URL larni olib tashlaymiz
+  images = [...new Set(images.filter(Boolean))];
 
   const hasMultipleImages = images.length > 1;
   const productId = product.uid || product.id;
