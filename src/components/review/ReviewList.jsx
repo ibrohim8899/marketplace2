@@ -200,20 +200,6 @@ export default function ReviewList({ productId, onCommentDeleted }) {
                 </div>
 
                 <div className="flex flex-col items-end gap-2">
-                  {/* Reyting */}
-                  <div className="flex gap-0.5">
-                    {[...Array(5)].map((_, i) => (
-                      <span
-                        key={i}
-                        className={`text-lg ${
-                          i < (comment.rating || 5) ? 'text-yellow-400' : 'text-gray-300'
-                        }`}
-                      >
-                        ★
-                      </span>
-                    ))}
-                  </div>
-
                   {own && (
                     <div className="flex gap-1">
                       {isEditing ? (

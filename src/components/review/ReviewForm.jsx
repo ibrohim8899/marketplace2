@@ -69,19 +69,6 @@ export default function ReviewForm({ productId, onAdded }) {
     <form onSubmit={handleSubmit} className="space-y-4 bg-gray-50 p-4 rounded-lg">
       {error && <div className="text-red-600 text-sm">{error}</div>}
       
-      <div className="flex gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            key={star}
-            type="button"
-            onClick={() => setRating(star)}
-            className={`text-2xl transition-all ${star <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
-          >
-            ★
-          </button>
-        ))}
-      </div>
-      
       <textarea
         placeholder={t('review_placeholder')}
         value={comment}
