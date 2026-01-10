@@ -95,14 +95,6 @@ export default function ProfileCard() {
     };
   }, [t]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user_profile");
-    setProfile(null);
-    setHasToken(false);
-  };
-
   const handleLogin = () => {
     navigate("/login");
   };
@@ -165,6 +157,8 @@ export default function ProfileCard() {
     profile.picture ||
     null;
 
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+
   const infoItems = [
     {
       label: t("profile_label_phone"),
@@ -180,6 +174,19 @@ export default function ProfileCard() {
       accent: "text-slate-600",
     },
   ];
+
+  const performLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user_profile");
+    setProfile(null);
+    setHasToken(false);
+    setShowLogoutConfirm(false);
+  };
+
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
 
   return (
     <div className="bg-white px-3 pt-2 pb-3">
@@ -229,7 +236,7 @@ export default function ProfileCard() {
         </div>
 
         <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3">
             {infoItems.map(({ label, value, icon: Icon, accent }) => (
               <div key={label} className="rounded-2xl border border-gray-100 p-3">
                 <p className="text-[11px] uppercase tracking-wide text-gray-500 flex items-center gap-2">
@@ -243,7 +250,7 @@ export default function ProfileCard() {
             ))}
           </div>
 
-          <div className="grid grid-cols-2 gap-3 text-xs text-gray-700">
+          <div className="grid grid-cols-1 gap-3 text-xs text-gray-700">
             <div className="rounded-2xl border border-gray-100 p-3">
               <p className="uppercase tracking-wide text-gray-500">
                 {t("profile_registered_at")}
@@ -280,13 +287,47 @@ export default function ProfileCard() {
 
         <div>
           <button
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
             className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 hover:shadow-rose-500/30 transition-all text-sm"
           >
             <LogOut className="w-5 h-5" />
             {t("profile_logout")}
           </button>
         </div>
+
+        {showLogoutConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+            <div className="w-full max-w-sm mx-4 rounded-2xl bg-white text-gray-900 shadow-xl p-5">
+              <h2 className="text-lg font-semibold mb-2">
+                {t("profile_logout_confirm_title")}
+              </h2>
+              <p className="text-sm text-gray-700 mb-3">
+                {t("profile_logout_confirm_description")}
+              </p>
+              <p className="text-xs text-gray-500 mb-5">
+                {t("profile_logout_info_description")}
+              </p>
+
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowLogoutConfirm(false)}
+                  className="flex-1 py-2.5 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                >
+                  {t("profile_logout_confirm_cancel")}
+                </button>
+                <button
+                  type="button"
+                  onClick={performLogout}
+                  className="flex-1 py-2.5 rounded-xl bg-rose-600 text-white text-sm font-semibold flex items-center justify-center gap-2 hover:bg-rose-700 transition-colors"
+                >
+                  <LogOut className="w-4 h-4" />
+                  {t("profile_logout_confirm_yes")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

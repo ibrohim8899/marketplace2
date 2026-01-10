@@ -97,6 +97,12 @@ const translations = {
     profile_telegram_id: 'Telegram ID',
     profile_extra_info_title: "Qo'shimcha ma'lumotlar",
     profile_logout: 'Chiqish',
+    profile_logout_confirm_title: "Haqiqatan ham chiqmoqchimisiz?",
+    profile_logout_confirm_description: "Siz marketplace hisobingizdan chiqmoqchisiz.",
+    profile_logout_info_description:
+      "Chiqib ketganingizdan so'ng buyurtmalar va saqlangan ma'lumotlarni ko'rish uchun qayta tizimga kirishingiz kerak bo'ladi.",
+    profile_logout_confirm_cancel: "Yo'q, qolaman",
+    profile_logout_confirm_yes: "Ha, chiqaman",
     profile_load_failed: "Profilni yuklab bo'lmadi.",
     profile_go_login_button: "Kirish sahifasiga o'tish",
 
@@ -240,6 +246,12 @@ const translations = {
     profile_telegram_id: 'Telegram ID',
     profile_extra_info_title: 'Дополнительная информация',
     profile_logout: 'Выйти',
+    profile_logout_confirm_title: 'Вы действительно хотите выйти?',
+    profile_logout_confirm_description: 'Вы собираетесь выйти из своего аккаунта маркетплейса.',
+    profile_logout_info_description:
+      'После выхода вам нужно будет снова войти, чтобы просматривать заказы и сохранённые данные.',
+    profile_logout_confirm_cancel: 'Нет, остаться',
+    profile_logout_confirm_yes: 'Да, выйти',
     profile_load_failed: 'Не удалось загрузить профиль.',
     profile_go_login_button: 'Перейти на страницу входа',
 
@@ -383,6 +395,12 @@ const translations = {
     profile_telegram_id: 'Telegram ID',
     profile_extra_info_title: 'Additional information',
     profile_logout: 'Log out',
+    profile_logout_confirm_title: 'Are you sure you want to log out?',
+    profile_logout_confirm_description: 'You are about to log out from your marketplace account.',
+    profile_logout_info_description:
+      'After logging out you will need to sign in again to view orders and saved data.',
+    profile_logout_confirm_cancel: 'No, stay',
+    profile_logout_confirm_yes: 'Yes, log out',
     profile_load_failed: 'Failed to load profile.',
     profile_go_login_button: 'Go to login page',
 
