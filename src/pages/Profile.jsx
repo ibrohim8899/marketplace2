@@ -429,7 +429,7 @@ export default function ProfileCard() {
                 type="button"
                 onClick={handleBecomeSeller}
                 disabled={becomingSeller}
-                className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-400 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all text-sm"
+                className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:bg-emerald-400 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all text-[11px]"
               >
                 <ShieldCheck className="w-5 h-5" />
                 {t("profile_become_seller")}
@@ -441,7 +441,7 @@ export default function ProfileCard() {
                 type="button"
                 onClick={handleSwitchToClient}
                 disabled={switchingToClient || isSwitchDisabled}
-                className="w-full bg-slate-800 hover:bg-slate-900 disabled:bg-slate-700 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all text-sm"
+                className="w-full bg-slate-800 hover:bg-slate-900 disabled:bg-slate-700 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 transition-all text-[11px]"
               >
                 <User className="w-5 h-5" />
                 {t("profile_switch_to_client")}
@@ -450,7 +450,7 @@ export default function ProfileCard() {
 
             <button
               onClick={handleLogoutClick}
-              className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 hover:shadow-rose-500/30 transition-all text-sm"
+              className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white font-semibold py-2.5 rounded-2xl shadow-md flex items-center justify-center gap-2 hover:shadow-rose-500/30 transition-all text-[11px]"
             >
               <LogOut className="w-5 h-5" />
               {t("profile_logout")}
