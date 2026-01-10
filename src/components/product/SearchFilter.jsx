@@ -132,6 +132,7 @@ export default function SearchFilter({ initialQuery = '', initialMin = '', initi
               <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
                 {t('sf_price_min_label')}
               </label>
+
               <Input
                 type="number"
                 min="0"
@@ -141,9 +142,10 @@ export default function SearchFilter({ initialQuery = '', initialMin = '', initi
               />
             </div>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
                 {t('sf_price_max_label')}
               </label>
+
               <Input
                 type="number"
                 min="0"
@@ -156,9 +158,10 @@ export default function SearchFilter({ initialQuery = '', initialMin = '', initi
 
           {/* Location Filter */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-slate-200 mb-2">
               {t('sf_location_label')}
             </label>
+
             <Input
               placeholder={t('sf_location_placeholder')}
               value={location}
