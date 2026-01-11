@@ -108,6 +108,13 @@ const translations = {
     profile_load_failed: "Profilni yuklab bo'lmadi.",
     profile_go_login_button: "Kirish sahifasiga o'tish",
 
+    profile_auto_retry_button: "Avto-kirishni qayta urinib ko'rish",
+    profile_auto_retry_button_loading: "Avto-kirish sinab ko'rilmoqda...",
+    profile_auto_retry_countdown_prefix: "Yana ",
+    profile_auto_retry_countdown_suffix: " soniya kuting...",
+    profile_auto_retry_fail:
+      "Tizimda vaqtinchalik xatolik bo'lishi mumkin. Iltimos, birozdan so'ng yana urinib ko'ring yoki internet aloqangizni tekshiring.",
+
     review_error_empty: 'Sharh yozing!',
     review_login_required: 'Sharh yozish uchun tizimga kiring!',
     review_login_required_title: 'Tizimga kiring',
@@ -259,6 +266,13 @@ const translations = {
     profile_load_failed: 'Не удалось загрузить профиль.',
     profile_go_login_button: 'Перейти на страницу входа',
 
+    profile_auto_retry_button: 'Повторить авто-вход',
+    profile_auto_retry_button_loading: 'Авто-вход выполняется...',
+    profile_auto_retry_countdown_prefix: 'Осталось ',
+    profile_auto_retry_countdown_suffix: ' секунд...',
+    profile_auto_retry_fail:
+      'Возможно, возникла временная ошибка в системе. Попробуйте позже или проверьте интернет-соединение.',
+
     review_error_empty: 'Напишите отзыв!',
     review_login_required: 'Чтобы оставить отзыв, войдите в систему!',
     review_login_required_title: 'Войдите в систему',
@@ -409,6 +423,13 @@ const translations = {
     profile_logout_confirm_yes: 'Yes, log out',
     profile_load_failed: 'Failed to load profile.',
     profile_go_login_button: 'Go to login page',
+
+    profile_auto_retry_button: 'Retry auto login',
+    profile_auto_retry_button_loading: 'Trying auto login...',
+    profile_auto_retry_countdown_prefix: 'Please wait ',
+    profile_auto_retry_countdown_suffix: ' seconds...',
+    profile_auto_retry_fail:
+      'There may be a temporary system error. Please try again later or check your internet connection.',
 
     review_error_empty: 'Write a review!',
     review_login_required: 'Please sign in to leave a review!',

@@ -15,6 +15,7 @@ import {
   Loader2,
 } from "lucide-react";
 import axiosInstance from "../api/axiosInstance";
+import { autoLoginWithTelegramId } from "../api/auth";
 
 const formatDate = (value, locale = "uz-UZ") => {
   if (!value) return "";
@@ -43,6 +44,9 @@ export default function ProfileCard() {
   const [switchingToClient, setSwitchingToClient] = useState(false);
   const [now, setNow] = useState(Date.now());
   const { t, lang } = useLanguage();
+  const [isRetryingAutoLogin, setIsRetryingAutoLogin] = useState(false);
+  const [retrySecondsLeft, setRetrySecondsLeft] = useState(0);
+  const [autoRetryError, setAutoRetryError] = useState("");
 
   const localeMap = {
     uz: "uz-UZ",
@@ -122,8 +126,86 @@ export default function ProfileCard() {
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    if (!isRetryingAutoLogin || retrySecondsLeft <= 0) return;
+
+    const id = setTimeout(() => {
+      setRetrySecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearTimeout(id);
+  }, [isRetryingAutoLogin, retrySecondsLeft]);
+
+  useEffect(() => {
+    if (!isRetryingAutoLogin || retrySecondsLeft > 0) {
+      return;
+    }
+
+    setIsRetryingAutoLogin(false);
+
+    if (!hasToken || !profile) {
+      setAutoRetryError(t("profile_auto_retry_fail"));
+    }
+  }, [isRetryingAutoLogin, retrySecondsLeft, hasToken, profile, t]);
+
   const handleLogin = () => {
     navigate("/login");
+  };
+
+  const handleRetryAutoLogin = async () => {
+    if (isRetryingAutoLogin) return;
+
+    setAutoRetryError("");
+    setIsRetryingAutoLogin(true);
+    setRetrySecondsLeft(10);
+
+    try {
+      if (typeof window === "undefined") return;
+
+      const tg = window.Telegram && window.Telegram.WebApp;
+      if (!tg) {
+        console.warn("[Profile] Telegram WebApp konteksti topilmadi, auto-login qayta urinish imkonsiz.");
+        return;
+      }
+
+      const initDataUnsafe = tg.initDataUnsafe || {};
+      const rawInitData = tg.initData || "";
+
+      let user = initDataUnsafe.user;
+
+      if ((!user || !user.id) && rawInitData) {
+        try {
+          const params = new URLSearchParams(rawInitData);
+          const userStr = params.get("user");
+          if (userStr) {
+            const parsedUser = JSON.parse(userStr);
+            if (parsedUser && parsedUser.id) {
+              user = parsedUser;
+            }
+          }
+        } catch (e) {
+          console.error("[Profile] Telegram user parse xatoligi (retry):", e);
+        }
+      }
+
+      if (!user || !user.id) {
+        console.warn("[Profile] Telegram user ma'lumoti topilmadi (retry).");
+        return;
+      }
+
+      const telegramId = user.id || user.user_id || user.telegram_id;
+      if (!telegramId) {
+        console.warn("[Profile] Telegram ID aniqlanmadi (retry).");
+        return;
+      }
+
+      await autoLoginWithTelegramId(telegramId);
+    } catch (err) {
+      console.error(
+        "[Profile] Auto login retry xatoligi:",
+        err?.response?.data || err.message || err,
+      );
+    }
   };
 
   const renderEmptyState = () => (
@@ -136,13 +218,35 @@ export default function ProfileCard() {
         <p className="text-gray-500 dark:text-slate-400 text-sm mt-1">
           {error || t("profile_empty_desc")}
         </p>
+        {autoRetryError && (
+          <p className="text-xs text-rose-500 mt-2">
+            {autoRetryError}
+          </p>
+        )}
+        {isRetryingAutoLogin && retrySecondsLeft > 0 && (
+          <p className="text-xs text-gray-500 dark:text-slate-400 mt-2">
+            {t("profile_auto_retry_countdown_prefix")}
+            {retrySecondsLeft}
+            {t("profile_auto_retry_countdown_suffix")}
+          </p>
+        )}
       </div>
 
       <button
-        onClick={handleLogin}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
+        type="button"
+        onClick={handleRetryAutoLogin}
+        disabled={isRetryingAutoLogin}
+        className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
       >
         <LogIn className="w-5 h-5" />
+        {isRetryingAutoLogin ? t("profile_auto_retry_button_loading") : t("profile_auto_retry_button")}
+      </button>
+
+      <button
+        type="button"
+        onClick={handleLogin}
+        className="w-full text-xs text-gray-600 dark:text-slate-300 underline mt-1"
+      >
         {t("profile_go_login_button")}
       </button>
     </div>
